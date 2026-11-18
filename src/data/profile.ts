@@ -127,7 +127,7 @@ export const PROFILE: ProfileConfig = {
     ],
   },
   contact: {
-    email: 'hello@krishmakwana.dev',
-    note: 'Replace with your preferred personal email in src/data/profile.ts, or reach out directly via Instagram or GitHub.',
+    email: 'krishuniverse07@gmail.com',
+    note: 'Prefer a quick message? You can also reach out on Instagram or GitHub.',
   },
 };

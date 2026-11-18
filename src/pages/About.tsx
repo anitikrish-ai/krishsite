@@ -1,8 +1,10 @@
 import * as stylex from "@stylexjs/stylex";
-import { Accordion, Card, Chip } from "@lenso/ui";
+import { Accordion, Chip } from "@lenso/ui";
 import { PROFILE } from "../data/profile";
 import { PageHead } from "../layout";
-import { Reveal, Tilt } from "../fx";
+import { Reveal } from "../fx";
+import { I } from "../icons";
+import { IconTile, Panel } from "../panel";
 import { ui } from "../ui";
 
 const faq: [string, string][] = [
@@ -17,23 +19,25 @@ export default function About() {
     <div {...stylex.props(ui.wrap)}>
       <PageHead eyebrow="About" title={<>Builder of ideas, <span {...stylex.props(ui.grad)}>artist at heart</span></>} sub={PROFILE.tagline} />
       <div {...stylex.props(ui.grid)}>
-        {PROFILE.aboutStory.map((p, i) => <Reveal key={i} delay={i * 100}><Card><div {...stylex.props(ui.pad)}><p {...stylex.props(ui.muted)}>{p}</p></div></Card></Reveal>)}
+        {PROFILE.aboutStory.map((p, i) => <Panel key={i} delay={i * 90}><p {...stylex.props(ui.muted)} style={{ fontSize: 16.5 }}>{p}</p></Panel>)}
       </div>
       <div {...stylex.props(ui.grid)}>
-        {([["Traditional art", PROFILE.traditionalArtFocus], ["Digital art", PROFILE.digitalArtFocus]] as const).map(([t, items], i) => (
-          <Reveal key={t} delay={i * 120}><Tilt><Card><div {...stylex.props(ui.pad)}>
-            <Card.Title>{t}</Card.Title><ul {...stylex.props(ui.list)}>{items.map((x) => <li key={x}>{x}</li>)}</ul>
-          </div></Card></Tilt></Reveal>
+        {([["Traditional art", PROFILE.traditionalArtFocus, I.pen, "linear-gradient(135deg,#fb923c,#f472b6)"], ["Digital art", PROFILE.digitalArtFocus, I.image, "linear-gradient(135deg,#60a5fa,#a78bfa)"]] as const).map(([t, items, Ic, bg], i) => (
+          <Panel key={t} delay={i * 100}>
+            <IconTile bg={bg}><Ic size={22} /></IconTile>
+            <h3 {...stylex.props(ui.title)}>{t}</h3><ul {...stylex.props(ui.list)}>{items.map((x) => <li key={x}>{x}</li>)}</ul>
+          </Panel>
         ))}
         {PROFILE.skills.map((g, i) => (
-          <Reveal key={g.category} delay={i * 120}><Tilt><Card><div {...stylex.props(ui.pad)}>
-            <Card.Title>{g.category}</Card.Title><div {...stylex.props(ui.row)}>{g.items.map((x) => <Chip key={x}>{x}</Chip>)}</div>
-          </div></Card></Tilt></Reveal>
+          <Panel key={g.category} delay={i * 100}>
+            <h3 {...stylex.props(ui.title)}>{g.category}</h3>
+            <div {...stylex.props(ui.row)}>{g.items.map((x) => <Chip key={x}>{x}</Chip>)}</div>
+          </Panel>
         ))}
       </div>
       <div {...stylex.props(ui.section)}>
         <Reveal><h2 {...stylex.props(ui.h2)}>Quick answers</h2></Reveal>
-        <Reveal delay={100}><Accordion>
+        <Reveal delay={90}><Accordion>
           {faq.map(([q, a]) => (
             <Accordion.Item key={q} value={q}>
               <Accordion.Heading><Accordion.Trigger>{q}<Accordion.Indicator /></Accordion.Trigger></Accordion.Heading>

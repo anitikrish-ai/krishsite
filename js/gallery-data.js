@@ -11,14 +11,14 @@
  *
  * Item fields:
  *   id          unique string, no spaces (used as a URL/key)
- *   title       shown in the viewer (optional — omit for untitled)
+ *   title       shown in the viewer (optional, omit for untitled)
  *   collection  "traditional" | "digital" | a custom collection id
- *   date        "YYYY-MM-DD" — drives the Years / Months grouping
+ *   date        "YYYY-MM-DD", drives the Years / Months grouping
  *   medium      short string, e.g. "Pencil on paper", "Procreate"
  *   description optional longer note
  *   src         path to the image, e.g. "/art/images/sketch-01.jpg"
  *
- * No artwork has been added yet — the gallery below is fully
+ * No artwork has been added yet. The gallery below is fully
  * working and will populate itself the moment items are added here.
  */
 window.GALLERY = {

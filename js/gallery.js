@@ -1,4 +1,4 @@
-/* Art gallery engine — reads window.GALLERY (js/gallery-data.js). */
+/* Art gallery engine. Reads window.GALLERY (js/gallery-data.js). */
 (function () {
   'use strict';
 
@@ -18,6 +18,11 @@
 
   var favorites = new Set(lsGet(LS_FAV, []));
   var customCollections = lsGet(LS_CUSTOM, []); // [{id,name,itemIds:[]}]
+  // Sanitise stored data (heals collections written by an earlier bug, see createCollectionPrompt)
+  if (!Array.isArray(customCollections)) customCollections = [];
+  customCollections = customCollections
+    .filter(function (c) { return c && typeof c.id === 'string' && typeof c.name === 'string'; })
+    .map(function (c) { return { id: c.id, name: c.name, itemIds: Array.isArray(c.itemIds) ? c.itemIds : [] }; });
 
   function saveFavorites() { lsSet(LS_FAV, Array.from(favorites)); }
   function saveCustom() { lsSet(LS_CUSTOM, customCollections); }
@@ -120,8 +125,8 @@
 
   // ---------------------------------------------------------------- render: toolbar / header
   function renderHeader() {
-    els.segLibrary.setAttribute('aria-selected', String(state.mode === 'library'));
-    els.segCollections.setAttribute('aria-selected', String(state.mode === 'collections'));
+    els.segLibrary.setAttribute('aria-pressed', String(state.mode === 'library'));
+    els.segCollections.setAttribute('aria-pressed', String(state.mode === 'collections'));
     els.backBtn.style.display = (state.mode === 'library' && state.scopeId !== 'all') ? '' : 'none';
 
     if (state.mode === 'collections') {
@@ -134,7 +139,7 @@
     }
     els.bottomBar.style.display = state.mode === 'library' ? '' : 'none';
     els.bottomBar.querySelectorAll('button').forEach(function (b) {
-      b.setAttribute('aria-selected', String(b.dataset.scope === state.dateScope));
+      b.setAttribute('aria-pressed', String(b.dataset.scope === state.dateScope));
     });
   }
 
@@ -156,12 +161,25 @@
     var isFav = favorites.has(item.id);
     var isSel = state.selected.has(item.id);
     return (
-      '<button type="button" class="g-thumb" data-id="' + esc(item.id) + '" aria-pressed="' + isSel + '" aria-label="' + esc(thumbAlt(item)) + '">' +
+      '<button type="button" class="g-thumb is-pending" data-id="' + esc(item.id) + '" aria-pressed="' + isSel + '" aria-label="' + esc(thumbAlt(item)) + '">' +
         '<img src="' + esc(item.src) + '" alt="' + esc(thumbAlt(item)) + '" loading="lazy" decoding="async">' +
         '<span class="g-check">' + checkSvg() + '</span>' +
         (isFav ? '<span class="g-fav">' + favSvg(true) + '</span>' : '') +
       '</button>'
     );
+  }
+
+  // Loading and error states for thumbnails: shimmer until decoded, message if it fails.
+  function watchImages(scope) {
+    scope.querySelectorAll('.g-thumb.is-pending').forEach(function (btn) {
+      var img = btn.querySelector('img');
+      if (!img) { btn.classList.remove('is-pending'); return; }
+      function done() { btn.classList.remove('is-pending'); }
+      function fail() { btn.classList.remove('is-pending'); btn.classList.add('is-broken'); }
+      if (img.complete) { if (img.naturalWidth) done(); else fail(); return; }
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', fail, { once: true });
+    });
   }
 
   function renderLibrary() {
@@ -175,6 +193,7 @@
       );
     }).join('<div class="g-group"></div>');
     els.body.innerHTML = '<div class="g-group">' + html + '</div>';
+    watchImages(els.body);
 
     els.body.querySelectorAll('.g-thumb').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -187,14 +206,17 @@
   }
 
   function renderEmpty() {
-    var isAll = state.scopeId === 'all';
+    var isAll = state.scopeId === 'all' && !state.search;
+    var msg = isAll
+      ? 'New pieces will appear here as they are added.'
+      : (state.search
+          ? 'No results for \u201c' + esc(state.search) + '\u201d.'
+          : 'Nothing in \u201c' + esc(labelForScope(state.scopeId)) + '\u201d yet.');
     els.body.innerHTML =
-      '<div class="g-empty">' +
-        '<svg class="g-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5.5-5.5a2 2 0 0 0-2.8 0L3 20"/></svg>' +
-        '<h3>' + (isAll ? 'No artwork yet' : 'Nothing here yet') + '</h3>' +
-        (isAll
-          ? '<p>Add entries to <code>js/gallery-data.js</code> and drop the image files into <code>/art/images/</code> — this gallery will fill itself in automatically.</p>'
-          : '<p>Nothing in “' + esc(labelForScope(state.scopeId)) + '” matches' + (state.search ? ' your search' : ' yet') + '.</p>') +
+      '<div class="g-empty empty">' +
+        '<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5.5-5.5a2 2 0 0 0-2.8 0L3 20"/></svg>' +
+        '<h3>' + (isAll ? 'No artwork yet' : 'Nothing here') + '</h3>' +
+        '<p>' + msg + '</p>' +
       '</div>';
   }
 
@@ -241,16 +263,26 @@
       });
     });
     var newBtn = document.getElementById('g-new-collection-btn');
-    if (newBtn) newBtn.addEventListener('click', createCollectionPrompt);
+    if (newBtn) newBtn.addEventListener('click', function () { createCollectionPrompt(); });
   }
 
   function createCollectionPrompt(presetIds) {
-    var name = window.prompt('Name this collection:');
-    if (!name) return;
-    var id = 'c_' + Date.now().toString(36);
-    customCollections.push({ id: id, name: name.trim(), itemIds: presetIds || [] });
-    saveCustom();
-    render();
+    // presetIds must be an array. This function used to be bound directly as a click
+    // handler, so it received the click event, saved it as itemIds and broke every
+    // later render of the collections view.
+    var preset = Array.isArray(presetIds) ? presetIds : [];
+    window.krishDialog.prompt({
+      title: 'New collection',
+      message: 'Give your collection a name.',
+      label: 'Name',
+      placeholder: 'Collection name',
+      confirmLabel: 'Create'
+    }).then(function (name) {
+      if (!name) return;
+      customCollections.push({ id: 'c_' + Date.now().toString(36), name: name, itemIds: preset });
+      saveCustom();
+      render();
+    });
   }
 
   // ---------------------------------------------------------------- select mode / bulk actions
@@ -271,22 +303,32 @@
   }
 
   // ---------------------------------------------------------------- viewer
-  var viewerState = { list: [], index: 0, scale: 1 };
+  var viewerState = { list: [], index: 0, scale: 1, opener: null };
 
   function openViewer(list, index) {
     viewerState.list = list; viewerState.index = index; viewerState.scale = 1;
     renderViewerItem();
+    viewerState.opener = document.activeElement;
     els.viewer.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+    els.viewerClose.focus();
   }
   function closeViewer() {
     els.viewer.classList.remove('is-open');
     document.body.style.overflow = '';
+    var o = viewerState.opener;
+    viewerState.opener = null;
+    if (o && document.contains(o) && o.focus) o.focus();
   }
   function renderViewerItem() {
     var item = viewerState.list[viewerState.index];
     if (!item) return;
-    els.viewerImg.src = item.src;
+    els.viewer.classList.remove('is-broken');
+    if (els.viewerImg.getAttribute('src') !== item.src) {
+      els.viewer.classList.add('is-loading');
+      els.viewerImg.src = item.src;
+      if (els.viewerImg.complete && els.viewerImg.naturalWidth) els.viewer.classList.remove('is-loading');
+    }
     els.viewerImg.alt = item.title || 'Artwork';
     els.viewerImg.style.transform = 'scale(1)';
     els.viewerImg.classList.remove('is-zoomed');
@@ -371,18 +413,24 @@
   els.bulkAdd.addEventListener('click', function () {
     var ids = Array.from(state.selected);
     if (ids.length === 0) return;
-    var names = customCollections.map(function (c) { return c.name; });
-    var choice = window.prompt('Add ' + ids.length + ' item(s) to a collection.\nType an existing name (' + (names.join(', ') || 'none yet') + ') or a new one:');
-    if (!choice) return;
-    choice = choice.trim();
-    var existing = customCollections.filter(function (c) { return c.name.toLowerCase() === choice.toLowerCase(); })[0];
-    if (existing) {
-      ids.forEach(function (id) { if (existing.itemIds.indexOf(id) === -1) existing.itemIds.push(id); });
-    } else {
-      customCollections.push({ id: 'c_' + Date.now().toString(36), name: choice, itemIds: ids });
-    }
-    saveCustom();
-    setSelecting(false);
+    window.krishDialog.choose({
+      title: 'Add to collection',
+      message: ids.length + (ids.length === 1 ? ' item selected.' : ' items selected.'),
+      options: customCollections.map(function (c) { return { id: c.id, label: c.name }; }),
+      newLabel: customCollections.length ? 'Or create a new collection' : 'Collection name',
+      newPlaceholder: 'Collection name',
+      confirmLabel: 'Add'
+    }).then(function (res) {
+      if (!res) return;
+      if (res.id) {
+        var existing = customCollections.filter(function (c) { return c.id === res.id; })[0];
+        if (existing) ids.forEach(function (id) { if (existing.itemIds.indexOf(id) === -1) existing.itemIds.push(id); });
+      } else {
+        customCollections.push({ id: 'c_' + Date.now().toString(36), name: res.name, itemIds: ids });
+      }
+      saveCustom();
+      setSelecting(false);
+    });
   });
 
   els.bottomBar.querySelectorAll('button').forEach(function (b) {
@@ -393,6 +441,8 @@
   els.viewerPrev.addEventListener('click', function () { viewerNav(-1); });
   els.viewerNext.addEventListener('click', function () { viewerNav(1); });
   els.viewerFav.addEventListener('click', toggleViewerFavorite);
+  els.viewerImg.addEventListener('load', function () { els.viewer.classList.remove('is-loading'); });
+  els.viewerImg.addEventListener('error', function () { els.viewer.classList.remove('is-loading'); els.viewer.classList.add('is-broken'); });
   els.viewerImg.addEventListener('dblclick', toggleZoom);
   (function wireTapZoomMobile() {
     var last = 0;
@@ -406,6 +456,14 @@
 
   document.addEventListener('keydown', function (e) {
     if (!els.viewer.classList.contains('is-open')) return;
+    if (e.key === 'Tab') {   // keep keyboard focus inside the open viewer
+      var f = Array.prototype.filter.call(els.viewer.querySelectorAll('button'), function (b) { return b.offsetParent !== null && getComputedStyle(b).visibility !== 'hidden'; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      return;
+    }
     if (e.key === 'Escape') closeViewer();
     else if (e.key === 'ArrowLeft') viewerNav(-1);
     else if (e.key === 'ArrowRight') viewerNav(1);

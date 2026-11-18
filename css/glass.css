@@ -1,0 +1,111 @@
+/* ==========================================================================
+   Liquid Glass materials
+   --------------------------------------------------------------------------
+   A glass surface is built from layers, not a single blur:
+
+     1. backdrop   blur + saturation of whatever is behind it
+                   (Chromium also refracts the rim, see js/liquid-glass.js)
+     2. tint       a translucent fill that keeps text legible
+     3. sheen      a soft top-down highlight, painted by ::before
+     4. rim        1px directional edge light: bright top, faint bottom,
+                   plus a 0.5px outer hairline (inset box-shadows)
+     5. shadow     a tight contact shadow plus a long soft one
+
+   Rules that keep it fast and readable:
+     - Glass is for things that FLOAT over content: navigation, toolbars,
+       sheets, menus. Content groups use the quieter .surface tier in
+       main.css and never blur.
+     - Never nest one backdrop-filter element inside another. The inner one
+       would only see its parent. Put the glass on a sibling layer instead
+       (see .bar-glass).
+     - Do not set --muted or --faint text directly on tier-1 glass. Use
+       --text, or step up to .glass-strong.
+   Values adapted from Lenso UI materials (MIT).
+   ========================================================================== */
+
+:where(.glass, .glass-strong):not(dialog){ position: relative; }
+
+.glass,
+.glass-strong{
+  isolation: isolate;
+  color: var(--text);
+  background-color: var(--glass-fill);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow:
+    inset 0 0 0 .5px var(--glass-edge),
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -1px 0 var(--glass-rim-low),
+    var(--glass-shadow);
+}
+
+.glass-strong{
+  background-color: var(--glass-fill-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-sat));
+  box-shadow:
+    inset 0 0 0 .5px var(--glass-edge),
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -1px 0 var(--glass-rim-low),
+    var(--glass-shadow-lg);
+}
+
+/* sheen: sits above the tint, below content */
+.glass::before,
+.glass-strong::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--glass-sheen);
+}
+
+/* Pressed: glass dims a touch, like a physical key */
+.glass-press{ transition: transform var(--dur-1) var(--ease-ui), background-color var(--dur-1) var(--ease-ui); }
+.glass-press:active{ transform: scale(.97); }
+
+/* ---- fallbacks ---------------------------------------------------------- */
+
+/* No backdrop-filter support: denser fill so nothing behind shows through */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
+  .glass{ background-color: var(--glass-fill-strong); }
+  .glass-strong{ background-color: var(--surface); }
+}
+
+/* "Reduce transparency" / "Increase contrast": solid surfaces, crisp edges */
+@media (prefers-reduced-transparency: reduce){
+  .glass,
+  .glass-strong{
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: var(--surface);
+  }
+  .glass::before,
+  .glass-strong::before{ display: none; }
+}
+@media (prefers-contrast: more){
+  .glass,
+  .glass-strong{
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line-strong), var(--glass-shadow);
+  }
+  .glass::before,
+  .glass-strong::before{ display: none; }
+}
+@media (forced-colors: active){
+  .glass,
+  .glass-strong{
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+  .glass::before,
+  .glass-strong::before{ display: none; }
+}

@@ -3,8 +3,13 @@
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
 
+  var COLORS = { light: '#f2f2f7', dark: '#0b0c10' };
+  document.documentElement.classList.add('js');
+
   function apply(mode) {
     document.documentElement.setAttribute('data-theme', mode);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', COLORS[mode]);
   }
 
   if (saved === 'light' || saved === 'dark') {

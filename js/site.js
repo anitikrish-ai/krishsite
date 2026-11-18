@@ -7,6 +7,8 @@
     pinterest: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.64 19.3c-.05-.78-.1-1.98.02-2.83.11-.77.73-3.9.73-3.9s-.19-.37-.19-.92c0-.86.5-1.5 1.12-1.5.53 0 .78.4.78.87 0 .53-.34 1.33-.51 2.07-.15.62.31 1.12.92 1.12 1.1 0 1.95-1.17 1.95-2.85 0-1.49-1.07-2.53-2.6-2.53-1.77 0-2.81 1.33-2.81 2.7 0 .53.2 1.11.46 1.42a.19.19 0 0 1 .04.18c-.05.2-.16.63-.18.72-.03.11-.1.14-.22.08-.84-.39-1.36-1.6-1.36-2.58 0-2.1 1.53-4.03 4.4-4.03 2.31 0 4.1 1.65 4.1 3.85 0 2.3-1.45 4.15-3.46 4.15-.68 0-1.32-.35-1.53-.77l-.42 1.59c-.15.58-.56 1.3-.84 1.75A10 10 0 1 0 12 2Z"/></svg>'
   };
 
+  var ARROW_UR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>';
+
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   function renderSocials() {
@@ -24,7 +26,7 @@
               '<span class="row-note">' + esc(s.note) + '</span>' +
             '</span>' +
             '<span class="chip">' + esc(s.tag) + '</span>' +
-            '<span class="row-go" aria-hidden="true">↗</span>' +
+            '<span class="row-go" aria-hidden="true">' + ARROW_UR + '</span>' +
             '<span class="sr-only"> (opens in a new tab)</span>' +
           '</a></li>'
         );
@@ -46,15 +48,15 @@
       if (limit) list = list.slice(0, limit);
       el.innerHTML = list.map(function (p) {
         var links = p.links.map(function (l) {
-          return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" class="btn">' + esc(l.label) + ' <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>';
+          return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" class="btn">' + esc(l.label) + ARROW_UR + '<span class="sr-only"> (opens in a new tab)</span></a>';
         }).join('');
         return (
-          '<div class="card">' +
+          '<article class="card" data-status="' + esc(p.status) + '">' +
             '<p class="meta">' + esc(p.category) + ' · ' + esc(STATUS_LABEL[p.status] || '') + '</p>' +
             '<h3>' + esc(p.name) + '</h3>' +
             '<p>' + esc(p.desc) + '</p>' +
             '<div class="card-foot">' + links + '</div>' +
-          '</div>'
+          '</article>'
         );
       }).join('');
     });

@@ -1,0 +1,219 @@
+/* ==========================================================================
+   Design tokens
+   --------------------------------------------------------------------------
+   One source of truth for colour, glass materials, radii, spacing and motion.
+   Glass material values (blur, tint, rim lighting, shadows, semantic colour
+   roles) are adapted from Lenso UI (MIT, https://github.com/lenso) and
+   re-expressed as plain CSS custom properties.
+
+   Three material tiers, used everywhere in the site:
+     1. glass         floating controls and navigation (blur + refraction)
+     2. surface       content groups: cards, grouped lists, fields (no blur)
+     3. glass-strong  sheets, menus, dialogs (denser fill, deeper shadow)
+
+   Shapes are continuous rounded rectangles. Buttons are never capsules.
+   ========================================================================== */
+
+:root{
+  color-scheme: light dark;
+
+  /* ---- type ---- */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", ui-sans-serif, system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---- radii ---- */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+
+  /* ---- spacing (4px grid) ---- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px;
+
+  /* ---- layout ---- */
+  --w: 720px;
+  --w-wide: 1100px;
+  --bar-h: 56px;
+  --hit: 44px;               /* minimum touch target */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+
+  /* ---- motion ---- */
+  --ease: cubic-bezier(.22,.8,.3,1);
+  --ease-ui: cubic-bezier(.25,.1,.25,1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-text);
+}
+
+/* ---- light (default) ---- */
+:root,
+:root[data-theme="light"]{
+  --bg: #f2f2f7;
+  --bg-2: #e6e7ed;
+  --surface: #ffffff;
+  --text: #111216;
+  --muted: #4d515c;
+  --faint: #656975;
+  --line: rgba(17,18,22,.10);
+  --line-strong: rgba(17,18,22,.20);
+
+  --accent: #0067d1;
+  --accent-hover: #0071e3;
+  --accent-press: #0059b8;
+  --accent-text: #0062c4;
+  --accent-ink: #ffffff;
+  --ok: #14783a;
+  --warn: #a35a00;
+  --danger: #c5221f;
+
+  /* Fills for hover/pressed on translucent surfaces (Apple quaternary..secondary) */
+  --fill-q: rgba(116,116,128,.08);
+  --fill-t: rgba(116,116,128,.12);
+  --fill-s: rgba(120,120,128,.18);
+
+  /* Tier 1: glass (floating controls and navigation) */
+  --glass-fill: rgba(255,255,255,.64);
+  --glass-fill-strong: rgba(255,255,255,.80);
+  --glass-blur: 18px;
+  --glass-blur-strong: 30px;
+  --glass-sat: 1.7;
+  --glass-sheen: linear-gradient(180deg, rgba(255,255,255,.60) 0%, rgba(255,255,255,.14) 40%, rgba(255,255,255,0) 100%);
+  --glass-edge: rgba(15,17,24,.10);
+  --glass-rim: rgba(255,255,255,.90);
+  --glass-rim-low: rgba(255,255,255,.34);
+  --glass-shadow: 0 1px 2px rgba(20,22,35,.06), 0 10px 30px -12px rgba(20,22,35,.26);
+  --glass-shadow-lg: 0 2px 6px rgba(20,22,35,.08), 0 26px 60px -18px rgba(20,22,35,.38);
+  --control-fill: rgba(120,120,135,.13);
+  --control-fill-hover: rgba(120,120,135,.19);
+  --control-fill-press: rgba(120,120,135,.27);
+  --selected-fill: #ffffff;
+  --selected-shadow: 0 1px 1px rgba(20,22,35,.08), 0 3px 8px -2px rgba(20,22,35,.16);
+
+  /* Tier 2: surfaces (content groups, no backdrop blur) */
+  --surface-fill: rgba(255,255,255,.74);
+  --surface-edge: rgba(15,17,24,.07);
+  --surface-hi: rgba(255,255,255,.95);
+  --surface-shadow: 0 1px 2px rgba(20,22,35,.04), 0 14px 30px -20px rgba(20,22,35,.26);
+  --field-fill: rgba(255,255,255,.7);
+
+  --scrim: rgba(10,10,14,.55);
+  --ambient:
+    radial-gradient(60% 46% at 10% -6%, rgba(0,122,255,.14), transparent 72%),
+    radial-gradient(48% 40% at 100% 100%, rgba(255,149,0,.08), transparent 72%);
+}
+
+/* ---- dark: explicit choice, or a dark scope inside a light page (photo viewer) ---- */
+:root[data-theme="dark"],
+.theme-dark{
+  --bg: #0b0c10;
+  --bg-2: #15161d;
+  --surface: #17181f;
+  --text: #f2f3f7;
+  --muted: #aaaebb;
+  --faint: #8c909d;
+  --line: rgba(255,255,255,.10);
+  --line-strong: rgba(255,255,255,.20);
+
+  --accent: #0a6bd1;
+  --accent-hover: #0a74e6;
+  --accent-press: #075bb3;
+  --accent-text: #5aadff;
+  --accent-ink: #ffffff;
+  --ok: #4fd38a;
+  --warn: #ffb340;
+  --danger: #ff6b66;
+
+  --fill-q: rgba(120,120,128,.16);
+  --fill-t: rgba(120,120,128,.22);
+  --fill-s: rgba(120,120,128,.32);
+
+  --glass-fill: rgba(34,36,46,.60);
+  --glass-fill-strong: rgba(26,27,36,.80);
+  --glass-blur: 18px;
+  --glass-blur-strong: 30px;
+  --glass-sat: 1.6;
+  --glass-sheen: linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 100%);
+  --glass-edge: rgba(255,255,255,.13);
+  --glass-rim: rgba(255,255,255,.24);
+  --glass-rim-low: rgba(255,255,255,.06);
+  --glass-shadow: 0 1px 2px rgba(0,0,0,.42), 0 12px 34px -12px rgba(0,0,0,.62);
+  --glass-shadow-lg: 0 2px 6px rgba(0,0,0,.5), 0 30px 68px -18px rgba(0,0,0,.8);
+  --control-fill: rgba(120,120,128,.24);
+  --control-fill-hover: rgba(120,120,128,.34);
+  --control-fill-press: rgba(120,120,128,.44);
+  --selected-fill: rgba(255,255,255,.20);
+  --selected-shadow: 0 1px 1px rgba(0,0,0,.3), 0 3px 8px -2px rgba(0,0,0,.45);
+
+  --surface-fill: rgba(255,255,255,.055);
+  --surface-edge: rgba(255,255,255,.09);
+  --surface-hi: rgba(255,255,255,.08);
+  --surface-shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 32px -20px rgba(0,0,0,.65);
+  --field-fill: rgba(255,255,255,.07);
+
+  --scrim: rgba(3,3,6,.72);
+  --ambient:
+    radial-gradient(60% 46% at 10% -6%, rgba(10,132,255,.20), transparent 72%),
+    radial-gradient(48% 40% at 100% 100%, rgba(48,209,200,.09), transparent 72%);
+}
+
+/* ---- dark: OS preference when no explicit choice is stored ---- */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg: #0b0c10;
+    --bg-2: #15161d;
+    --surface: #17181f;
+    --text: #f2f3f7;
+    --muted: #aaaebb;
+    --faint: #8c909d;
+    --line: rgba(255,255,255,.10);
+    --line-strong: rgba(255,255,255,.20);
+
+    --accent: #0a6bd1;
+    --accent-hover: #0a74e6;
+    --accent-press: #075bb3;
+    --accent-text: #5aadff;
+    --accent-ink: #ffffff;
+    --ok: #4fd38a;
+    --warn: #ffb340;
+    --danger: #ff6b66;
+
+    --fill-q: rgba(120,120,128,.16);
+    --fill-t: rgba(120,120,128,.22);
+    --fill-s: rgba(120,120,128,.32);
+
+    --glass-fill: rgba(34,36,46,.60);
+    --glass-fill-strong: rgba(26,27,36,.80);
+    --glass-blur: 18px;
+    --glass-blur-strong: 30px;
+    --glass-sat: 1.6;
+    --glass-sheen: linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 100%);
+    --glass-edge: rgba(255,255,255,.13);
+    --glass-rim: rgba(255,255,255,.24);
+    --glass-rim-low: rgba(255,255,255,.06);
+    --glass-shadow: 0 1px 2px rgba(0,0,0,.42), 0 12px 34px -12px rgba(0,0,0,.62);
+    --glass-shadow-lg: 0 2px 6px rgba(0,0,0,.5), 0 30px 68px -18px rgba(0,0,0,.8);
+    --control-fill: rgba(120,120,128,.24);
+    --control-fill-hover: rgba(120,120,128,.34);
+    --control-fill-press: rgba(120,120,128,.44);
+    --selected-fill: rgba(255,255,255,.20);
+    --selected-shadow: 0 1px 1px rgba(0,0,0,.3), 0 3px 8px -2px rgba(0,0,0,.45);
+
+    --surface-fill: rgba(255,255,255,.055);
+    --surface-edge: rgba(255,255,255,.09);
+    --surface-hi: rgba(255,255,255,.08);
+    --surface-shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 32px -20px rgba(0,0,0,.65);
+    --field-fill: rgba(255,255,255,.07);
+
+    --scrim: rgba(3,3,6,.72);
+    --ambient:
+      radial-gradient(60% 46% at 10% -6%, rgba(10,132,255,.20), transparent 72%),
+      radial-gradient(48% 40% at 100% 100%, rgba(48,209,200,.09), transparent 72%);
+  }
+}

@@ -1,14 +1,14 @@
 /*
  * Central site data.
- * Edit this file to update identity, social links or projects —
- * every page that lists them reads from here.
+ * Edit this file to update identity, social links or projects.
+ * Every page that lists them reads from here.
  */
 window.SITE = {
   identity: {
     name: "Krish Makwana",
     shortName: "Krish",
     role: "Computer Engineering Student · Idea Creator · AI-Assisted Developer · Artist",
-    blurb: "I design my own ideas and build them with AI as a tool, and I draw — traditional and digital — alongside it.",
+    blurb: "I design my own ideas and build them with AI as a tool, and I draw alongside it, traditional and digital.",
     year: new Date().getFullYear() || 2026
   },
 
@@ -20,7 +20,7 @@ window.SITE = {
       name: "GitHub",
       handle: "anitikrish-ai",
       url: "https://github.com/anitikrish-ai",
-      note: "Primary — AI-assisted builds, tools and experiments.",
+      note: "Primary account. AI-assisted builds, tools and experiments.",
       tag: "Code"
     },
     {
@@ -68,7 +68,7 @@ window.SITE = {
       name: "ZIP-TO-GIT",
       status: "live",
       category: "Developer tool",
-      desc: "A simple GitHub publishing tool. Connect your GitHub account, upload a project ZIP, and publish it to a repository through an easy workflow — built to work conveniently even from smaller devices, including mobile.",
+      desc: "A simple GitHub publishing tool. Connect your GitHub account, upload a project ZIP, and publish it to a repository through an easy workflow. It is built to work conveniently even from smaller devices, including mobile.",
       links: [
         { label: "Repository", url: "https://github.com/anitikrish-ai/zip-to-git" }
       ]
@@ -78,7 +78,7 @@ window.SITE = {
       name: "DropFast",
       status: "live",
       category: "File sharing",
-      desc: "A fast file and image sharing platform for moving content between devices — one-to-one and one-to-many sharing.",
+      desc: "A fast file and image sharing platform for moving content between devices, with one-to-one and one-to-many sharing.",
       links: [
         { label: "Open DropFast", url: "https://dropfast.lovable.app" }
       ]
@@ -98,7 +98,7 @@ window.SITE = {
       name: "DriftJS",
       status: "collaborative",
       category: "Frontend framework",
-      desc: "A frontend UI framework and reactivity engine powered by an in-browser register-based bytecode virtual machine and an ahead-of-time optimizing compiler. It compiles .drift Single File Components into compact instruction streams, executed by a lightweight 256-register VM for direct DOM updates, with server-side rendering and static site generation through shared compiled bytecode. Built collaboratively with friends as a college project — presented here as team engineering work, not sole authorship.",
+      desc: "A frontend UI framework and reactivity engine powered by an in-browser register-based bytecode virtual machine and an ahead-of-time optimizing compiler. It compiles .drift Single File Components into compact instruction streams, executed by a lightweight 256-register VM for direct DOM updates, with server-side rendering and static site generation through shared compiled bytecode. Built collaboratively with friends as a college project, and presented here as team engineering work, not sole authorship.",
       links: [
         { label: "Organization", url: "https://github.com/driftjs-org" }
       ]

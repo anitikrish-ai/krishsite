@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
 import { ThemeScope } from "@lenso/ui";
-import { Aurora, ScrollBar } from "./fx";
+import { ScrollBar } from "./fx";
 import { ALL, Footer, Navbar } from "./layout";
 import { useRoute } from "./router";
 import Home from "./pages/Home";
@@ -29,15 +29,15 @@ export default function App() {
     try { const v = localStorage.getItem(KEY); if (v === "dark" || v === "light") return v === "dark"; } catch { /* storage unavailable */ }
     return !matchMedia("(prefers-color-scheme: light)").matches;
   });
-  useEffect(() => { try { localStorage.setItem(KEY, dark ? "dark" : "light"); } catch { /* ignore */ } }, [dark]);
+  useEffect(() => { try { localStorage.setItem(KEY, dark ? "dark" : "light"); } catch { /* ignore */ } document.body.style.backgroundColor = dark ? "#0b0b0d" : "#f5f5f7"; }, [dark]);
   useEffect(() => {
     const name = ALL.find(([id]) => id === route)?.[1];
     document.title = route === "home" ? "Krish Makwana — Builder, Artist, Student" : `${name ?? "Not found"} · Krish Makwana`;
   }, [route]);
   return (
     <ThemeScope theme={dark ? "dark" : "light"}>
-      <div {...stylex.props(s.page)}>
-        <Aurora dark={dark} /><ScrollBar />
+      <div {...stylex.props(s.page)} style={{ backgroundColor: dark ? "#0b0b0d" : "#f5f5f7" }}>
+        <ScrollBar />
         <Navbar route={route} dark={dark} onToggle={() => setDark((d) => !d)} />
         <main key={route} {...stylex.props(s.view)}>{Object.hasOwn(PAGES, route) ? PAGES[route] : <NotFound />}</main>
         <Footer />

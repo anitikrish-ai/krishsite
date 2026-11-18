@@ -24,4 +24,4 @@ Use only the public anon key in the frontend and keep Row Level Security enabled
 - `.env` is git-ignored. `public/.well-known/security.txt` lists your contact.
 
 ## Motion
-Page changes use a circular View Transition from the tap point. Background shapes morph and drift, with film grain to avoid banding. Everything respects `prefers-reduced-motion`, `prefers-reduced-transparency` and `prefers-contrast`.
+Page changes use a circular View Transition from the tap point. Everything respects `prefers-reduced-motion`, `prefers-reduced-transparency` and `prefers-contrast`.

@@ -13,6 +13,7 @@ type R = [string, string, (p: { size?: number }) => ReactNode];
 export const PRIMARY: R[] = [["home", "Home", I.home], ["about", "About", I.user], ["projects", "Projects", I.grid], ["art", "Art", I.image], ["collaborate", "Collaborate", I.sparkles], ["contact", "Contact", I.mail]];
 const MORE: R[] = [["support", "Support", I.heart], ["links", "Links", I.link], ["privacy", "Privacy", I.shield], ["terms", "Terms", I.file]];
 export const ALL = [...PRIMARY, ...MORE];
+const sx = (extra: string, ...a: unknown[]) => { const p = stylex.props(...(a as never[])); return { className: `${p.className ?? ""} ${extra}`.trim(), style: p.style }; };
 const open = (u: string) => window.open(u, "_blank", "noopener,noreferrer");
 
 const s = stylex.create({
@@ -48,12 +49,12 @@ export function Navbar({ route, dark, onToggle }: { route: string; dark: boolean
   return (
     <header {...stylex.props(s.nav)} style={{ viewTransitionName: "nav" } as React.CSSProperties}>
       <div {...stylex.props(ui.wrap)}>
-        <nav {...stylex.props(s.bar)} className="glass" aria-label="Primary">
-          <button type="button" {...stylex.props(s.brand)} className="press" onClick={() => go("home")} aria-label="Go to home"><Logo size={28} />{PROFILE.name}</button>
+        <nav {...sx("glass", s.bar)} aria-label="Primary">
+          <button type="button" {...sx("press", s.brand)} onClick={() => go("home")} aria-label="Go to home"><Logo size={28} />{PROFILE.name}</button>
           <div ref={ref} {...stylex.props(s.links)}>
             <span {...stylex.props(s.pillMark)} style={{ width: pill?.w ?? 0, transform: `translateX(${pill?.x ?? 0}px)`, opacity: pill ? 1 : 0 }} aria-hidden="true" />
             {PRIMARY.map(([id, label]) => (
-              <button key={id} type="button" data-route={id} className="press" {...stylex.props(s.link, route === id && s.linkOn)} aria-current={route === id ? "page" : undefined} onClick={() => go(id)}>{label}</button>
+              <button key={id} type="button" data-route={id} {...sx("press", s.link, route === id && s.linkOn)} aria-current={route === id ? "page" : undefined} onClick={() => go(id)}>{label}</button>
             ))}
           </div>
           <div {...stylex.props(s.right)}>
@@ -90,7 +91,7 @@ export function PageHead({ eyebrow, title, sub }: { eyebrow: string; title: Reac
 }
 
 export function TextLink({ onClick, children }: { onClick: () => void; children: ReactNode }) {
-  return <button type="button" className="press" {...stylex.props(s.tlink)} onClick={onClick}>{children}</button>;
+  return <button type="button" {...sx("press", s.tlink)} onClick={onClick}>{children}</button>;
 }
 
 export function Footer() {

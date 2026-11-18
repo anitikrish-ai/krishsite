@@ -2,26 +2,11 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
 
-const drift = stylex.keyframes({
-  "0%": { transform: "translate3d(0,0,0) rotate(0deg)" },
-  "50%": { transform: "translate3d(5vw,-4vh,0) rotate(18deg)" },
-  "100%": { transform: "translate3d(0,0,0) rotate(0deg)" },
-});
-const morph = stylex.keyframes({
-  "0%": { borderRadius: "42% 58% 70% 30% / 45% 45% 55% 55%" },
-  "33%": { borderRadius: "73% 27% 36% 64% / 56% 62% 38% 44%" },
-  "66%": { borderRadius: "34% 66% 55% 45% / 68% 37% 63% 32%" },
-  "100%": { borderRadius: "42% 58% 70% 30% / 45% 45% 55% 55%" },
-});
 const scroll = stylex.keyframes({ from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } });
 const blink = stylex.keyframes({ "0%, 49%": { opacity: 1 }, "50%, 100%": { opacity: 0 } });
 const NO_MOTION = "@media (prefers-reduced-motion: reduce)";
 
 const s = stylex.create({
-  aurora: { position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden" },
-  par: { position: "absolute", transition: "transform 1200ms cubic-bezier(.32,.72,0,1)", willChange: "transform" },
-  drift: { animationName: { default: drift, [NO_MOTION]: "none" }, animationIterationCount: "infinite", animationTimingFunction: "ease-in-out" },
-  blob: { animationName: { default: morph, [NO_MOTION]: "none" }, animationIterationCount: "infinite", animationTimingFunction: "ease-in-out", filter: "blur(28px)" },
   bar: { position: "fixed", top: 0, left: 0, right: 0, height: 3, zIndex: 50, transformOrigin: "0 50%", backgroundImage: "linear-gradient(90deg,#60a5fa,#a78bfa,#fb923c)" },
   track: { overflow: "hidden", maskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)", WebkitMaskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)" },
   belt: { display: "flex", gap: 12, width: "max-content", animationName: { default: scroll, [NO_MOTION]: "none" }, animationDuration: "42s", animationIterationCount: "infinite", animationTimingFunction: "linear" },
@@ -98,41 +83,6 @@ export function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
     raf = requestAnimationFrame(tick); return () => cancelAnimationFrame(raf);
   }, [seen, to]);
   return <span ref={ref}>{v}{suffix}</span>;
-}
-
-type Blob = { x: string; y: string; w: number; h: number; k: number; dur: number; light: [string, string]; dark: [string, string] };
-const BLOBS: Blob[] = [
-  { x: "-12%", y: "-14%", w: 62, h: 52, k: 60, dur: 26, light: ["#9ec5ff", "#c3b4ff"], dark: ["#1d4ed8", "#4c1d95"] },
-  { x: "52%", y: "-10%", w: 56, h: 60, k: -45, dur: 32, light: ["#e0b8ff", "#ffb3d1"], dark: ["#7e22ce", "#be185d"] },
-  { x: "-8%", y: "48%", w: 54, h: 50, k: 35, dur: 29, light: ["#ffcfa8", "#ffb8a0"], dark: ["#c2410c", "#9a3412"] },
-  { x: "56%", y: "52%", w: 58, h: 52, k: -70, dur: 24, light: ["#a5eaf5", "#a8d4ff"], dark: ["#0e7490", "#1e40af"] },
-];
-
-/** Apple-style mesh wallpaper: large morphing gradient shapes, parallax on pointer, film grain to avoid banding. */
-export function Aurora({ dark }: { dark: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    let raf = 0;
-    const f = (e: PointerEvent) => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => {
-      ref.current?.style.setProperty("--mx", String(e.clientX / innerWidth - 0.5)); ref.current?.style.setProperty("--my", String(e.clientY / innerHeight - 0.5)); }); };
-    addEventListener("pointermove", f, { passive: true }); return () => removeEventListener("pointermove", f);
-  }, []);
-  return (
-    <div ref={ref} {...stylex.props(s.aurora)} aria-hidden="true">
-      {BLOBS.map((b, i) => {
-        const [c1, c2] = dark ? b.dark : b.light;
-        return (
-          <div key={i} {...stylex.props(s.par)} style={{ left: b.x, top: b.y, transform: `translate(calc(var(--mx,0) * ${b.k}px), calc(var(--my,0) * ${b.k}px))` }}>
-            <div {...stylex.props(s.drift)} style={{ animationDuration: `${b.dur}s`, animationDelay: `${-i * 7}s` }}>
-              <div {...stylex.props(s.blob)} style={{ width: `${b.w}vmax`, height: `${b.h}vmax`, opacity: dark ? 0.55 : 0.62,
-                background: `radial-gradient(circle at 30% 30%, ${c1}, ${c2} 75%)`, animationDuration: `${b.dur * 0.8}s`, animationDelay: `${-i * 5}s` }} />
-            </div>
-          </div>
-        );
-      })}
-      <div className="grain" />
-    </div>
-  );
 }
 
 export function ScrollBar() {

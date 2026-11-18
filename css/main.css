@@ -160,10 +160,11 @@ nav.primary a{
   display: flex; align-items: center; min-height: 40px; padding: 0 12px;
   border-radius: var(--r-sm);
   color: var(--text); font-size: 14.5px; font-weight: 500; white-space: nowrap;
-  transition: background-color var(--dur-2) var(--ease-ui), transform var(--dur-1) var(--ease-ui);
+  transition: background-color var(--dur-2) var(--ease-ui);
 }
 nav.primary a:hover{ background: var(--fill-q); }
-nav.primary a:active{ background: var(--fill-s); transform: scale(.98); }
+nav.primary a:active{ background: var(--fill-s); }
+@media (scripting: none){ nav.primary a:active{ transform: scale(.98); } }
 nav.primary a[aria-current]{
   font-weight: 650;
   background: var(--fill-t);
@@ -175,14 +176,15 @@ nav.primary a[aria-current]{
 /* Square-ish icon control: glass key, never a capsule */
 .icon-btn{
   display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
-  width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--r-sm);
+  width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--r-sm); overflow: hidden;
   color: var(--text); cursor: pointer;
   background: var(--control-fill);
   box-shadow: inset 0 0 0 .5px var(--glass-edge), inset 0 1px 0 var(--glass-rim);
-  transition: background-color var(--dur-2) var(--ease-ui), transform var(--dur-1) var(--ease-ui);
+  transition: background-color var(--dur-2) var(--ease-ui);
 }
 .icon-btn:hover{ background: var(--control-fill-hover); }
-.icon-btn:active{ background: var(--control-fill-press); transform: scale(.95); }
+.icon-btn:active{ background: var(--control-fill-press); }
+@media (scripting: none){ .icon-btn:active{ transform: scale(.95); } }
 .icon-btn svg{ width: 18px; height: 18px; }
 .icon-btn:disabled{ opacity: .4; pointer-events: none; }
 @media (pointer: coarse){ .icon-btn{ width: var(--hit); height: var(--hit); } }
@@ -346,15 +348,16 @@ a.row:hover .row-go{ color: var(--text); transform: translateX(2px); }
 /* ---------------------------------- buttons / links ---------------------------------- */
 .btn{
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  min-height: 40px; padding: 0 16px; border: 0; border-radius: var(--r-sm);
+  min-height: 40px; padding: 0 16px; border: 0; border-radius: var(--r-sm); overflow: hidden;
   font: 600 14.5px/1 var(--font); letter-spacing: -.005em; color: var(--text);
   background: var(--control-fill);
   box-shadow: inset 0 0 0 .5px var(--glass-edge), inset 0 1px 0 var(--glass-rim), 0 1px 2px rgba(20,22,35,.06);
   cursor: pointer; user-select: none; white-space: nowrap;
-  transition: background-color var(--dur-2) var(--ease-ui), transform var(--dur-1) var(--ease-ui), box-shadow var(--dur-2) var(--ease-ui);
+  transition: background-color var(--dur-2) var(--ease-ui), box-shadow var(--dur-2) var(--ease-ui);
 }
 .btn:hover{ background: var(--control-fill-hover); }
-.btn:active{ background: var(--control-fill-press); transform: scale(.97); }
+.btn:active{ background: var(--control-fill-press); }
+@media (scripting: none){ .btn:active{ transform: scale(.97); } }
 .btn svg{ width: 14px; height: 14px; flex-shrink: 0; opacity: .7; }
 .btn-primary{
   color: var(--accent-ink);

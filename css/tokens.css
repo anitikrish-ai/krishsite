@@ -64,14 +64,25 @@
   --line: rgba(17,18,22,.10);
   --line-strong: rgba(17,18,22,.20);
 
-  --accent: #0067d1;
-  --accent-hover: #0071e3;
-  --accent-press: #0059b8;
-  --accent-text: #0062c4;
+  /* Apple HIG system colours, light/standard, as used by Lenso UI's
+     apple-colors.ts token matrix (MIT). system-blue -> accent, system-green
+     -> ok, system-orange -> warn; danger is a contrast-adjusted derivative
+     of system-red so it stays AA-legible as body text on --bg/--surface. */
+  --accent: #0088ff;
+  --accent-hover: #1f95ff;
+  --accent-press: #0073dd;
+  --accent-text: #0077dd;
   --accent-ink: #ffffff;
-  --ok: #14783a;
-  --warn: #a35a00;
-  --danger: #c5221f;
+  --ok: #34c759;
+  --warn: #ff8d28;
+  --danger: #bf2a2d;
+  --danger-fill: #ff383c;
+  --indigo: #6155f5;
+  --purple: #cb30e0;
+  --pink: #ff2d55;
+  --teal: #00c3d0;
+  --mint: #00c8b3;
+  --cyan: #00c0e8;
 
   /* Fills for hover/pressed on translucent surfaces (Apple quaternary..secondary) */
   --fill-q: rgba(116,116,128,.08);
@@ -121,14 +132,22 @@
   --line: rgba(255,255,255,.10);
   --line-strong: rgba(255,255,255,.20);
 
-  --accent: #0a6bd1;
-  --accent-hover: #0a74e6;
-  --accent-press: #075bb3;
-  --accent-text: #5aadff;
+  /* Apple HIG system colours, dark/standard (Lenso apple-colors.ts). */
+  --accent: #0091ff;
+  --accent-hover: #2aa0ff;
+  --accent-press: #0077d1;
+  --accent-text: #5ab8ff;
   --accent-ink: #ffffff;
-  --ok: #4fd38a;
-  --warn: #ffb340;
-  --danger: #ff6b66;
+  --ok: #30d158;
+  --warn: #ff9230;
+  --danger: #ff4245;
+  --danger-fill: #ff4245;
+  --indigo: #6d7cff;
+  --purple: #db34f2;
+  --pink: #ff375f;
+  --teal: #00d2e0;
+  --mint: #00dac3;
+  --cyan: #3cd3fe;
 
   --fill-q: rgba(120,120,128,.16);
   --fill-t: rgba(120,120,128,.22);
@@ -175,14 +194,21 @@
     --line: rgba(255,255,255,.10);
     --line-strong: rgba(255,255,255,.20);
 
-    --accent: #0a6bd1;
-    --accent-hover: #0a74e6;
-    --accent-press: #075bb3;
-    --accent-text: #5aadff;
+    --accent: #0091ff;
+    --accent-hover: #2aa0ff;
+    --accent-press: #0077d1;
+    --accent-text: #5ab8ff;
     --accent-ink: #ffffff;
-    --ok: #4fd38a;
-    --warn: #ffb340;
-    --danger: #ff6b66;
+    --ok: #30d158;
+    --warn: #ff9230;
+    --danger: #ff4245;
+    --danger-fill: #ff4245;
+    --indigo: #6d7cff;
+    --purple: #db34f2;
+    --pink: #ff375f;
+    --teal: #00d2e0;
+    --mint: #00dac3;
+    --cyan: #3cd3fe;
 
     --fill-q: rgba(120,120,128,.16);
     --fill-t: rgba(120,120,128,.22);

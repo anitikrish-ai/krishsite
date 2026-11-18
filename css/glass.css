@@ -62,9 +62,50 @@
   background: var(--glass-sheen);
 }
 
-/* Pressed: glass dims a touch, like a physical key */
-.glass-press{ transition: transform var(--dur-1) var(--ease-ui), background-color var(--dur-1) var(--ease-ui); }
-.glass-press:active{ transform: scale(.97); }
+/* Pressed: glass dims a touch, like a physical key.
+   When js/lenso-press.js is running it drives --lg-press-scale/-translate
+   with the real Lenso spring model (rubber-band stretch toward the drag
+   direction, then a springy release) instead of a linear CSS transition;
+   the scale(.97)/transition fallback below is what you get without JS or
+   under prefers-reduced-motion. */
+.glass-press,
+.btn,
+.icon-btn,
+nav.primary a,
+a.row{
+  /* Standalone scale/translate (not transform: scale()/translate()), because
+     those take space-separated numbers directly -- exactly what the spring
+     in js/lenso-press.js writes each frame ("1.015 0.992", "2px -1px").
+     transform:scale()/translate() need commas, so var() substitution there
+     would be an invalid value and silently no-op. */
+  scale: var(--lg-press-scale, 1 1);
+  translate: var(--lg-press-translate, 0px 0px);
+}
+.glass-press{ transition: background-color var(--dur-1) var(--ease-ui); }
+@media (scripting: none){
+  .glass-press:active{ transform: scale(.97); }
+}
+
+/* Press highlight: a soft radial light under the pointer, fading in only
+   while pressed. Mirrors Lenso's pressHighlight material (material.styles.ts):
+   mask-clipped radial gradient, 220ms ease-in-out in, instant out, hidden
+   for forced-colors/reduced-motion. Opt in with data-glass-light. */
+.lg-press-highlight{
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(circle 220px at var(--lg-x, 50%) var(--lg-y, 50%),
+    rgba(255,255,255,.5), rgba(255,255,255,.16) 50%, transparent 72%);
+  mix-blend-mode: overlay;
+  transition: opacity 220ms ease-in-out;
+}
+[data-lenso-pressed] > .lg-press-highlight{ opacity: 1; transition-duration: 0ms; }
+@media (prefers-reduced-motion: reduce), (forced-colors: active){
+  .lg-press-highlight{ display: none; }
+}
 
 /* ---- fallbacks ---------------------------------------------------------- */
 

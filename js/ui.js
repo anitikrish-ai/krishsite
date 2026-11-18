@@ -78,12 +78,28 @@
     });
   }
 
+  // ---------------------------------------------------------------- press feel
+  // Wires the real Lenso spring/press engine (js/lenso-press.js) onto every
+  // control that already gets a CSS :active treatment, so the squish/rubber-
+  // band feel is physical instead of a fixed-duration CSS transition.
+  var pressTeardowns = [];
+  function applyPress() {
+    pressTeardowns.forEach(function (fn) { fn(); });
+    pressTeardowns = [];
+    if (!window.lensoPress) return;
+    var selector = '.btn, .icon-btn, nav.primary a, a.row, .glass-press';
+    doc.querySelectorAll(selector).forEach(function (el) {
+      pressTeardowns.push(window.lensoPress(el, { light: el.hasAttribute('data-glass-light') }));
+    });
+  }
+
   function init() {
     initNav();
     initScrollState();
     applyGlass();
     watchPreferences();
+    applyPress();
   }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init); else init();
-  window.krishGlass = { apply: applyGlass };
+  window.krishGlass = { apply: applyGlass, applyPress: applyPress };
 })();

@@ -1,36 +1,31 @@
-# krishsite
+# Krish Makwana — Personal Digital Space
 
-Static site, no build step. Deploys as-is on Vercel (see `vercel.json`).
+A responsive, Apple-inspired Liquid Glass personal website, creative portfolio, and iOS Photos-style art gallery built with React, TypeScript, and CSS.
 
-## UI system: Liquid Glass
+## Quick Start
 
-Load order on every page: `css/tokens.css`, `css/glass.css`, `css/main.css` (the gallery adds `css/gallery.css`).
+```bash
+npm install
+npm run dev
+```
 
-| File | Role |
-| --- | --- |
-| `css/tokens.css` | Colour, glass material values, radii, spacing, motion. Light and dark. Generated dark block is identical for explicit theme and OS preference. |
-| `css/glass.css` | The glass material (backdrop blur, tint, sheen, rim light, shadow) and its accessibility fallbacks. |
-| `css/main.css` | Components: header, nav, lists, cards, buttons, fields, sheet, footer. |
-| `js/liquid-glass.js` | Rim refraction for Chromium (SVG displacement map). Other browsers use the frosted CSS fallback. |
-| `js/ui.js` | Mobile menu, header depth on scroll, wires refraction to `[data-glass="refract"]`. |
-| `js/dialog.js` | Accessible modal sheets on native `<dialog>`: `krishDialog.prompt()` and `krishDialog.choose()`. |
+## Build for Production
 
-Three material tiers:
+```bash
+npm run build
+```
 
-1. **`.glass`** floats over content (navigation, toolbars). Blur plus rim refraction.
-2. **surfaces** (`.card`, `.list`, `.empty`) hold content. Translucent, no blur.
-3. **`.glass-strong`** for sheets and menus. Denser fill, deeper shadow.
+## Central Configuration
 
-Rules: never nest one `backdrop-filter` element inside another (put the glass on a sibling layer, see `.bar-glass`); keep `--muted` text off tier-1 glass; buttons are rounded rectangles, never capsules.
+All content is cleanly separated into `src/data/`:
 
-To add refraction to a new floating element: give it the `glass` class and `data-glass="refract"`. Tune with `data-lg-scale`, `data-lg-chroma`, `data-lg-border`, `data-lg-blur`.
+- `src/data/profile.ts` — Identity, bio, skills, education, collaboration & support options, and contact email.
+- `src/data/socials.ts` — GitHub, YouTube, Instagram, Pinterest, and existing website links.
+- `src/data/projects.ts` — Working projects and projects under development (`zip-to-git`, `dropfast`, `ikis-paint-web`, `driftjs`).
+- `src/data/artwork.ts` — Traditional Art and Digital Art gallery metadata.
 
-Accessibility: `prefers-reduced-transparency`, `prefers-contrast: more`, `forced-colors` and `prefers-reduced-motion` all remove blur and refraction or motion and fall back to solid surfaces.
+## Adding Your Actual Artwork
 
-## Content
-
-Edit `js/config.js` (identity, socials, projects) and `js/gallery-data.js` (artwork). Images go in `art/images/`.
-
-## Credits
-
-Material values and design principles adapted from [Lenso UI](https://github.com/lenso) (MIT). Refraction technique from [liquid-glass](https://github.com/deepika-builds/liquid-glass) (MIT, `js/LICENSE-liquid-glass.txt`). Typeface Inter (SIL OFL, `fonts/Inter-OFL.txt`), self-hosted for non-Apple devices.
+1. Place your original image files (`.jpg`, `.png`, `.webp`) inside `public/artwork/`.
+2. Add an entry for each piece in `src/data/artwork.ts` with its `src`, `title`, `medium` (`"traditional"` or `"digital"`), `date` (`YYYY-MM-DD`), and optional `description` or `collections`.
+3. You can also test-load images directly in the browser using the **+ Add Artwork** button in the Gallery section.

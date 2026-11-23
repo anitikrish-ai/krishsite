@@ -55,3 +55,10 @@ img { max-width: 100%; }
 @media (hover: hover) {
   .text-link:hover { transform: scale(1.01); }
 }
+@media print {
+  html, body, #root { background: #fff !important; color: #111 !important; overflow: visible !important; }
+  body { -webkit-print-color-adjust: economy; print-color-adjust: economy; }
+  header, footer, .skip-link, nav[aria-label="Mobile navigation"], [role="dialog"] { display: none !important; }
+  main { min-height: 0 !important; padding: 0 !important; }
+  a { color: #111 !important; text-decoration: underline; }
+}

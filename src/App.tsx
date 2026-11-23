@@ -3,6 +3,7 @@ import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
 import { ThemeScope } from "@lenso/ui";
 import { ScrollBar } from "./fx";
+import { CommandPalette } from "./CommandPalette";
 import { ALL, Footer, Navbar } from "./layout";
 import { useRoute } from "./router";
 import Home from "./pages/Home";
@@ -76,6 +77,7 @@ export default function App() {
       <div {...stylex.props(s.page)} data-reduced-motion={reducedMotion ? "true" : undefined} style={{ backgroundColor: dark ? "#0b0b0d" : "#f5f5f7" }}>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <ScrollBar />
+        <CommandPalette />
         <Navbar route={route} dark={dark} themeMode={themeMode} reducedMotion={reducedMotion} onToggle={() => setThemeMode((mode) => mode === "system" ? "dark" : mode === "dark" ? "light" : "system")} onMotionToggle={() => setReducedMotion((value) => !value)} />
         <main id="main-content" key={route} tabIndex={-1} {...stylex.props(s.view)}><Suspense fallback={<p role="status" className="route-loading">Loading page…</p>}>{Object.hasOwn(PAGES, route) ? PAGES[route] : <NotFound />}</Suspense></main>
         <Footer />

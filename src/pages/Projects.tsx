@@ -10,9 +10,9 @@ import { ui } from "../ui";
 
 const open = (u: string) => window.open(u, "_blank", "noopener,noreferrer");
 const s = stylex.create({
-  controls: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 18 },
-  search: { minHeight: 44, flex: "1 1 240px", maxWidth: 420, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
-  select: { minHeight: 44, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
+  controls: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 18, width: "100%", minWidth: 0 },
+  search: { minHeight: 44, flex: "1 1 240px", minWidth: 0, maxWidth: 420, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
+  select: { minHeight: 44, maxWidth: "100%", minWidth: 0, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
 });
 
 export default function Projects() {
@@ -36,7 +36,7 @@ export default function Projects() {
     <div {...stylex.props(ui.wrap)}>
       <PageHead eyebrow="Projects" title={<>Things I <span {...stylex.props(ui.grad)}>ship</span></>} sub="Working tools and experiments still being built." />
       <Reveal style={{ marginTop: 18 }}>
-        <div {...stylex.props(ui.scrollX)}>
+        <div className="scroll-x" {...stylex.props(ui.scrollX)}>
           <Tabs value={tab} onValueChange={(v) => setTab(String(v))}>
             <Tabs.ListContainer><Tabs.List aria-label="Status">
               <Tabs.Tab value="all">All</Tabs.Tab><Tabs.Tab value="working">Live</Tabs.Tab><Tabs.Tab value="in-development">Building</Tabs.Tab><Tabs.Indicator />

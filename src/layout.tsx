@@ -30,7 +30,8 @@ const s = stylex.create({
   mobileTabs: { display: { default: "none", "@media (max-width: 900px)": "flex" }, position: "fixed", zIndex: 35, inset: "auto 8px calc(8px + env(safe-area-inset-bottom, 0px))", justifyContent: "space-around", alignItems: "stretch", gap: 2, padding: 4, borderRadius: 14, border: `1px solid ${tokens.separator}`, backgroundColor: tokens.backgroundGroupedPrimary, boxShadow: "0 8px 28px rgba(0,0,0,.16)" },
   mobileTab: { display: "flex", flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, minWidth: 44, minHeight: 48, padding: "4px 2px", border: "none", borderRadius: 10, background: "none", color: tokens.labelSecondary, fontSize: 10, lineHeight: 1.15, cursor: "pointer" },
   mobileTabOn: { backgroundColor: tokens.fillSecondary, color: tokens.labelPrimary },
-  menu: { maxHeight: "min(72dvh, 560px)", overflowY: "auto", minWidth: 230 },
+  menu: { maxHeight: { default: "calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))", "@media (max-width: 900px)": "calc(100dvh - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))" }, overflowY: "auto", overscrollBehavior: "contain", WebkitOverflowScrolling: "touch", minWidth: "min(230px, calc(100vw - 24px))", maxWidth: "calc(100vw - 24px)" },
+  pageHead: { paddingTop: { default: 64, "@media (max-width: 560px)": 48 }, paddingBottom: 8 },
   ic: { display: "inline-flex", marginRight: 10, verticalAlign: "middle", opacity: 0.85 },
   foot: { paddingBlock: "56px calc(40px + env(safe-area-inset-bottom, 0px))", color: tokens.labelTertiary, fontSize: 14 },
   cols: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 28, marginBottom: 32 },
@@ -103,7 +104,7 @@ export function Navbar({ route, dark, themeMode, reducedMotion, onToggle, onMoti
 
 export function PageHead({ eyebrow, title, sub }: { eyebrow: string; title: ReactNode; sub?: string }) {
   return (
-    <div {...stylex.props(ui.section)} style={{ paddingTop: 64, paddingBottom: 8 }}>
+    <div {...stylex.props(s.pageHead)}>
       <Reveal y={14}><span {...stylex.props(ui.eyebrow)}>{eyebrow}</span></Reveal>
       <Reveal delay={70} y={18}><h1 {...stylex.props(ui.h1)}>{title}</h1></Reveal>
       {sub && <Reveal delay={140} y={18}><p {...stylex.props(ui.lead)}>{sub}</p></Reveal>}

@@ -2,7 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
 
 export const ui = stylex.create({
-  wrap: { maxWidth: 1120, marginInline: "auto", paddingInline: { default: 24, "@media (max-width: 560px)": 16 }, position: "relative", zIndex: 1, boxSizing: "border-box", width: "100%" },
+  wrap: { maxWidth: 1120, marginInline: "auto", paddingInline: { default: 24, "@media (max-width: 560px)": 16 }, position: "relative", zIndex: 1, boxSizing: "border-box", width: "100%", minWidth: 0 },
   section: { paddingBlock: "32px 56px" },
   eyebrow: { fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: tokens.labelSecondary },
   h1: { fontSize: "clamp(38px, 6.4vw, 68px)", fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1.04, margin: "10px 0 14px" },

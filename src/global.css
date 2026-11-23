@@ -7,6 +7,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { margin: 0; font-family: var(--font-ui); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-optical-sizing: auto; text-rendering: optimizeLegibility; overflow-x: hidden; }
+.scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
+.scroll-x::-webkit-scrollbar { display: none; }
 #root, #root * { font-family: var(--font-ui) !important; }
 #root code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace !important; font-size: 0.9em; }
 h1, h2, h3 { text-wrap: balance; margin: 0; }

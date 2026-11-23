@@ -5,7 +5,7 @@ import { ThemeScope } from "@lenso/ui";
 import { ScrollBar } from "./fx";
 import { ALL, Footer, Navbar } from "./layout";
 import { useRoute } from "./router";
-const Home = lazy(() => import("./pages/Home"));
+import Home from "./pages/Home";
 const About = lazy(() => import("./pages/About"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Art = lazy(() => import("./pages/Art"));

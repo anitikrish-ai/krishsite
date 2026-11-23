@@ -5,20 +5,20 @@ import { Button, GlassButton, Modal, Tabs } from "@lenso/ui";
 import { INITIAL_ARTWORK, PRIMARY_COLLECTIONS, type ArtworkItem } from "../data/artwork";
 import { PageHead } from "../layout";
 import { Reveal } from "../fx";
-import { I, SketchArt } from "../icons";
+import { I } from "../icons";
 import { Panel } from "../panel";
 import { ui } from "../ui";
 
 const s = stylex.create({
   masonry: { columnWidth: 220, columnGap: 14, marginTop: 24 },
-  tile: { display: "block", width: "100%", position: "relative", marginBottom: 14, padding: 0, border: "none", cursor: "pointer", borderRadius: 22, overflow: "hidden",
-    breakInside: "avoid", backgroundColor: tokens.fillTertiary, transition: "transform 600ms cubic-bezier(.32,.72,0,1)", transform: { default: "none", "@media (hover: hover)": { default: "none", ":hover": "scale(1.025)" } } },
+  tile: { display: "block", width: "100%", position: "relative", marginBottom: 14, padding: 0, border: "none", cursor: "pointer",
+    breakInside: "avoid", backgroundColor: "transparent", textAlign: "left" },
   img: { width: "100%", display: "block", height: "auto" },
-  cap: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "28px 14px 12px", textAlign: "left", color: "#fff", fontSize: 14, fontWeight: 600, letterSpacing: "-0.01em",
-    backgroundImage: "linear-gradient(transparent, rgba(0,0,0,.6))" },
-  heart: { position: "absolute", top: 10, right: 10, width: 34, height: 34, borderRadius: 999, border: "none", display: "grid", placeItems: "center", cursor: "pointer", color: "#fff",
-    backgroundColor: "rgba(0,0,0,.35)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" },
-  full: { maxWidth: "100%", maxHeight: "62dvh", borderRadius: 16, display: "block", marginInline: "auto" },
+  cap: { position: "absolute", left: 8, right: 8, bottom: 8, padding: "10px 12px", textAlign: "left", color: "#fff", fontSize: 14, fontWeight: 600, letterSpacing: "-0.01em",
+    borderRadius: 9, backgroundColor: "rgba(18, 20, 24, .86)", opacity: 0, transition: "opacity 180ms ease-out" },
+  heart: { position: "absolute", top: 10, right: 10, width: 44, height: 44, borderRadius: 10, border: "none", display: "grid", placeItems: "center", cursor: "pointer", color: "#fff",
+    backgroundColor: "rgba(18, 20, 24, .86)", opacity: 0, transition: "opacity 180ms ease-out" },
+  full: { maxWidth: "100%", maxHeight: "62dvh", borderRadius: 0, display: "block", marginInline: "auto" },
   nav: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, gap: 8 },
   bar: { display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" },
 });
@@ -58,9 +58,9 @@ export default function Art() {
     <div {...stylex.props(ui.wrap)}>
       <PageHead eyebrow="Art" title={<>Pencil, pen &amp; <span {...stylex.props(ui.grad)}>pixels</span></>} sub="Original artwork, shown unfiltered. Sketched on paper and painted on screen." />
       <div {...stylex.props(ui.grid)}>
-        {PRIMARY_COLLECTIONS.map((c, i) => (
-          <Panel key={c.id} delay={i * 100}>
-            <SketchArt variant={c.mediumFilter === "digital" ? "digital" : "traditional"} />
+        {PRIMARY_COLLECTIONS.map((c) => (
+          <Panel key={c.id}>
+            <span {...stylex.props(ui.eyebrow)}>{c.mediumFilter === "digital" ? "Digital" : "Traditional"}</span>
             <h3 {...stylex.props(ui.title)}>{c.name}</h3><p {...stylex.props(ui.muted)}>{c.description}</p>
             <div {...stylex.props(ui.row)} style={{ marginTop: "auto", justifyContent: "space-between" }}>
               <span {...stylex.props(ui.muted)}>{count(c.mediumFilter ?? "")} pieces</span>
@@ -88,18 +88,17 @@ export default function Art() {
       {shown.length === 0 ? (
         <div style={{ marginTop: 24 }}>
           <Panel center pad={36}>
-            <div style={{ width: "min(360px, 100%)" }}><SketchArt variant="empty" /></div>
-            <h3 {...stylex.props(ui.title)}>{tab === "fav" ? "No favorites yet" : "The gallery is waiting"}</h3>
-            <p {...stylex.props(ui.muted)} style={{ maxWidth: 480 }}>Put images in <code>public/artwork/</code> and register them in <code>src/data/artwork.ts</code>, or use “Add artwork” to preview an image in this session.</p>
+            <h3 {...stylex.props(ui.title)}>{tab === "fav" ? "No favorites yet" : "No artwork added yet"}</h3>
+            <p {...stylex.props(ui.muted)} style={{ maxWidth: 480 }}>Add original images to <code>public/artwork/</code> and register them in <code>src/data/artwork.ts</code>, or use “Add artwork” to preview an image in this session.</p>
           </Panel>
         </div>
       ) : (
         <div {...stylex.props(s.masonry)} key={tab}>
           {shown.map((a, i) => (
             <Reveal key={a.id} delay={(i % 6) * 60} style={{ breakInside: "avoid" }}>
-              <div style={{ position: "relative" }}>
+              <div className="art-item" style={{ position: "relative" }}>
                 <button type="button" {...stylex.props(s.tile)} onClick={() => setIdx(i)} aria-label={`Open ${a.title}`}>
-                  <img src={a.src} alt={a.title} loading="lazy" {...stylex.props(s.img)} /><span {...stylex.props(s.cap)}>{a.title}</span>
+                  <img src={a.src} alt={a.title} loading="lazy" decoding="async" {...stylex.props(s.img)} /><span {...stylex.props(s.cap)}>{a.title}</span>
                 </button>
                 <button type="button" {...stylex.props(s.heart)} aria-label={favs.includes(a.id) ? "Remove favorite" : "Add favorite"} onClick={() => toggleFav(a.id)} style={{ color: favs.includes(a.id) ? "#ff375f" : "#fff" }}><I.heart size={17} /></button>
               </div>

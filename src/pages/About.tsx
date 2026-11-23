@@ -1,5 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
-import { Accordion, Chip } from "@lenso/ui";
+import { Accordion } from "@lenso/ui";
 import { PROFILE } from "../data/profile";
 import { PageHead } from "../layout";
 import { Reveal } from "../fx";
@@ -8,7 +8,7 @@ import { IconTile, Panel } from "../panel";
 import { ui } from "../ui";
 
 const faq: [string, string][] = [
-  ["Do you use AI to build things?", PROFILE.honestNote],
+  ["How do you approach projects?", PROFILE.honestNote],
   ["What are you studying?", PROFILE.education],
   ["What kind of work are you open to?", PROFILE.collaboration.summary],
   ["Where are you based?", PROFILE.location],
@@ -24,14 +24,14 @@ export default function About() {
       <div {...stylex.props(ui.grid)}>
         {([["Traditional art", PROFILE.traditionalArtFocus, I.pen, "linear-gradient(135deg,#fb923c,#f472b6)"], ["Digital art", PROFILE.digitalArtFocus, I.image, "linear-gradient(135deg,#60a5fa,#a78bfa)"]] as const).map(([t, items, Ic, bg], i) => (
           <Panel key={t} delay={i * 100}>
-            <IconTile bg={bg}><Ic size={22} /></IconTile>
+            <IconTile><Ic size={22} /></IconTile>
             <h3 {...stylex.props(ui.title)}>{t}</h3><ul {...stylex.props(ui.list)}>{items.map((x) => <li key={x}>{x}</li>)}</ul>
           </Panel>
         ))}
         {PROFILE.skills.map((g, i) => (
           <Panel key={g.category} delay={i * 100}>
             <h3 {...stylex.props(ui.title)}>{g.category}</h3>
-            <div {...stylex.props(ui.row)}>{g.items.map((x) => <Chip key={x}>{x}</Chip>)}</div>
+            <ul {...stylex.props(ui.list)}>{g.items.map((x) => <li key={x}>{x}</li>)}</ul>
           </Panel>
         ))}
       </div>

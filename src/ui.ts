@@ -15,6 +15,6 @@ export const ui = stylex.create({
   row: { display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" },
   list: { margin: 0, paddingLeft: 18, color: tokens.labelSecondary, lineHeight: 1.9, fontSize: 15.5 },
   fill: { flex: 1, width: "100%", minHeight: 0 },
-  grad: { backgroundImage: "linear-gradient(110deg,#60a5fa,#a78bfa 45%,#fb923c)", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" },
+  grad: { color: tokens.labelPrimary },
   scrollX: { overflowX: "auto", maxWidth: "100%", scrollbarWidth: "none" },
 });

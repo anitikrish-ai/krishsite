@@ -43,17 +43,15 @@ export interface ProfileConfig {
 
 export const PROFILE: ProfileConfig = {
   name: 'Krish Makwana',
-  tagline: 'Computer Engineering Student • Idea Creator • AI-Assisted Builder • Traditional & Digital Artist',
+  tagline: 'Computer Engineering diploma student who builds browser tools and draws.',
   education: 'Final-year Computer Engineering Diploma student (planning to pursue a Bachelor’s degree next)',
   location: 'India',
-  intro:
-    'I imagine product ideas, build web tools with AI-assisted workflows, and express my visual ideas through traditional pencil sketching and digital anime-inspired art.',
-  honestNote:
-    'My ideas and product concepts are my own. I use AI as a development tool to help implement, structure, and refine those ideas alongside my foundational coding skills.',
+  intro: 'I build browser tools like DROPFAST and draw pencil sketches and anime-inspired digital art.',
+  honestNote: 'I am a Computer Engineering diploma student learning by building small web tools and drawing.',
   aboutStory: [
-    'I am a final-year Computer Engineering Diploma student preparing to pursue a degree after completing my diploma. My journey sits at the intersection of curiosity-driven building and hands-on visual art.',
-    'On the technology side, I enjoy coming up with practical web tools and creative software concepts, then using AI-assisted development together with my foundational knowledge of HTML, CSS, JavaScript, SQL, and Python to bring them to life.',
-    'On the creative side, drawing is a core part of who I am—not just an extra hobby. Whether sketching with pencil and pen on paper or painting digitally, I explore anime-inspired characters, portraits, and visual experiments.',
+    'I am a final-year Computer Engineering Diploma student planning to pursue a degree after graduation. I build web tools and make visual art.',
+    'On the technology side, I build practical web tools and creative software concepts while strengthening my foundations in HTML, CSS, JavaScript, SQL, and Python.',
+    'I draw pencil and pen sketches on paper and explore anime-inspired characters, portraits, and digital illustration.'
   ],
   traditionalArtFocus: [
     'Pencil sketches',
@@ -70,15 +68,15 @@ export const PROFILE: ProfileConfig = {
   ],
   skills: [
     {
-      category: 'Foundational Tech',
+      category: 'Web',
       items: ['HTML', 'CSS', 'JavaScript', 'SQL', 'Python'],
     },
     {
-      category: 'Building & Workflow',
-      items: ['Product Ideation', 'AI-Assisted Development', 'UI Prototyping', 'Git & GitHub'],
+      category: 'Tools',
+      items: ['Git & GitHub', 'UI Prototyping', 'Product Ideation'],
     },
     {
-      category: 'Creative Mediums',
+      category: 'Art',
       items: ['Pencil & Pen Sketching', 'Digital Illustration', 'Anime Character Art', 'Coloring & Visual Studies'],
     },
   ],
@@ -90,7 +88,7 @@ export const PROFILE: ProfileConfig = {
       {
         title: 'Idea & Web Prototype Collaboration',
         description:
-          'Collaborate on lightweight web tools, interactive concepts, or student team builds using AI-assisted workflows.',
+          'Collaborate on lightweight web tools, interactive concepts, or student team projects.'
       },
       {
         title: 'Custom Art & Character Sketches',

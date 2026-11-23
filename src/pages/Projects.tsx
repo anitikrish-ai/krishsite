@@ -9,11 +9,28 @@ import { Panel, Status } from "../panel";
 import { ui } from "../ui";
 
 const open = (u: string) => window.open(u, "_blank", "noopener,noreferrer");
+const s = stylex.create({
+  controls: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 18 },
+  search: { minHeight: 44, flex: "1 1 240px", maxWidth: 420, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
+  select: { minHeight: 44, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
+});
 
 export default function Projects() {
   const [tab, setTab] = useState("all");
   const [active, setActive] = useState<ProjectItem | null>(null);
-  const list = PROJECTS.filter((p) => tab === "all" || p.status === tab);
+  const [query, setQuery] = useState("");
+  const [tag, setTag] = useState("all");
+  const [copyStatus, setCopyStatus] = useState("");
+  const tags = Array.from(new Set(PROJECTS.flatMap((project) => project.technologies))).sort((a, b) => a.localeCompare(b));
+  const list = PROJECTS.filter((project) => {
+    const text = `${project.title} ${project.subtitle ?? ""} ${project.description} ${project.technologies.join(" ")}`.toLowerCase();
+    return (tab === "all" || project.status === tab) && (!query.trim() || text.includes(query.trim().toLowerCase())) && (tag === "all" || project.technologies.includes(tag));
+  });
+  const moveActive = (direction: number) => {
+    if (!active || list.length < 2) return;
+    const index = list.findIndex((project) => project.id === active.id);
+    setActive(list[(index + direction + list.length) % list.length]);
+  };
   return (
     <div {...stylex.props(ui.wrap)}>
       <PageHead eyebrow="Projects" title={<>Things I <span {...stylex.props(ui.grad)}>ship</span></>} sub="Working tools and experiments still being built." />
@@ -26,7 +43,16 @@ export default function Projects() {
           </Tabs>
         </div>
       </Reveal>
-      <div {...stylex.props(ui.grid)} key={tab}>
+      <div {...stylex.props(s.controls)}>
+        <label className="sr-only" htmlFor="project-search">Search projects</label>
+        <input id="project-search" type="search" placeholder="Search projects" value={query} onChange={(event) => setQuery(event.target.value)} {...stylex.props(s.search)} />
+        <label className="sr-only" htmlFor="project-tag">Filter by technology</label>
+        <select id="project-tag" value={tag} onChange={(event) => setTag(event.target.value)} {...stylex.props(s.select)}>
+          <option value="all">All technologies</option>
+          {tags.map((technology) => <option key={technology} value={technology}>{technology}</option>)}
+        </select>
+      </div>
+      <div {...stylex.props(ui.grid)} key={`${tab}-${tag}-${query}`}>
         {list.map((p, i) => (
           <Panel key={p.id} delay={i * 90}>
             <div {...stylex.props(ui.row)}><Status working={p.status === "working"}>{p.status === "working" ? "Working" : "In development"}</Status>{p.collaborative && <Chip size="sm" variant="soft">Team project</Chip>}</div>
@@ -41,6 +67,7 @@ export default function Projects() {
           </Panel>
         ))}
       </div>
+      {list.length === 0 && <p role="status" {...stylex.props(ui.muted)} style={{ marginTop: 20 }}>No projects match these filters. Try a different search or technology.</p>}
       <Modal open={!!active} onOpenChange={(o) => !o && setActive(null)}>
         <Modal.Backdrop />
         <Modal.Content>
@@ -52,8 +79,10 @@ export default function Projects() {
             <div {...stylex.props(ui.row)} style={{ marginTop: 14 }}>{active?.technologies.map((t) => <Chip key={t} size="sm">{t}</Chip>)}</div>
           </Modal.Body>
           <Modal.Footer>
+            {list.length > 1 && <Button variant="borderless" onClick={() => moveActive(-1)} aria-label="Previous project">Previous</Button>}
             {active?.liveUrl && <Button variant="prominent" onClick={() => open(active.liveUrl!)}>Open live site</Button>}
             {active?.repoUrl && <Button variant="bordered" onClick={() => open(active.repoUrl!)}>View repository</Button>}
+            {list.length > 1 && <Button variant="borderless" onClick={() => moveActive(1)} aria-label="Next project">Next</Button>}
           </Modal.Footer>
         </Modal.Content>
       </Modal>

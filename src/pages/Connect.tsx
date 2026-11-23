@@ -11,7 +11,7 @@ import { ui } from "../ui";
 
 const open = (u: string) => window.open(u, "_blank", "noopener,noreferrer");
 const steps = ["Tell me what you have in mind", "We shape the idea and scope together", "I build or draw a first version", "We refine it until it feels right"];
-const num = stylex.create({ n: { width: 34, height: 34, borderRadius: 999, display: "grid", placeItems: "center", fontWeight: 700, fontSize: 15, color: "#fff", backgroundImage: "linear-gradient(135deg,#60a5fa,#a78bfa)" } });
+const num = stylex.create({ n: { width: 36, height: 36, borderRadius: 10, display: "grid", placeItems: "center", fontWeight: 650, fontSize: 15, color: "CanvasText", backgroundColor: "Canvas" } });
 
 export function Collaborate() {
   return (
@@ -20,7 +20,7 @@ export function Collaborate() {
       <div {...stylex.props(ui.grid)}>
         {PROFILE.collaboration.options.map((o, i) => (
           <Panel key={o.title} delay={i * 100}>
-            <IconTile bg={["linear-gradient(135deg,#60a5fa,#3b82f6)", "linear-gradient(135deg,#fb923c,#f472b6)", "linear-gradient(135deg,#a78bfa,#6366f1)"][i % 3]}>{[<I.code size={22} />, <I.pen size={22} />, <I.sparkles size={22} />][i % 3]}</IconTile>
+            <IconTile>{[<I.code size={22} />, <I.pen size={22} />, <I.sparkles size={22} />][i % 3]}</IconTile>
             <h3 {...stylex.props(ui.title)}>{o.title}</h3><p {...stylex.props(ui.muted)}>{o.description}</p>
           </Panel>
         ))}
@@ -37,7 +37,6 @@ export function Collaborate() {
 }
 
 export function Support() {
-  const tint = ["linear-gradient(135deg,#24292f,#57606a)", "linear-gradient(135deg,#ff0033,#ff6b81)", "linear-gradient(135deg,#f9a03f,#e1306c 50%,#833ab4)"];
   const icons = [<I.github size={22} />, <I.youtube size={22} />, <I.instagram size={22} />];
   return (
     <div {...stylex.props(ui.wrap)}>
@@ -45,7 +44,7 @@ export function Support() {
       <div {...stylex.props(ui.grid)}>
         {PROFILE.support.links.map((l, i) => (
           <Panel key={l.label} delay={i * 100}>
-            <IconTile bg={tint[i % 3]}>{icons[i % 3]}</IconTile>
+            <IconTile>{icons[i % 3]}</IconTile>
             <h3 {...stylex.props(ui.title)}>{l.label}</h3><p {...stylex.props(ui.muted)}>{l.description}</p>
             <div style={{ marginTop: "auto" }}><Button variant="prominent" onClick={() => open(l.url)}>Open <I.ext size={14} /></Button></div>
           </Panel>
@@ -81,12 +80,14 @@ const clean = (v: string, max: number) => v.replace(/[\u0000-\u001f\u007f]+/g, "
 
 export function Contact() {
   const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [msg, setMsg] = useState("");
+  const [website, setWebsite] = useState("");
   const [copied, setCopied] = useState(false); const [err, setErr] = useState("");
   const send = () => {
+    if (website) return;
     const n = clean(name, 80), e = clean(email, 120), m = msg.replace(/\u0000/g, "").trim().slice(0, 2000);
     if (e && !EMAIL_RE.test(e)) { setErr("Please enter a valid email address, or leave it empty."); return; }
     setErr("");
-    const body = `${m}\n\n— ${n || "Anonymous"}${e ? ` (${e})` : ""}`;
+    const body = `${m}\n\n${n || "Anonymous"}${e ? ` (${e})` : ""}`;
     window.location.href = `mailto:${PROFILE.contact.email}?subject=${encodeURIComponent("Hello from your portfolio")}&body=${encodeURIComponent(body)}`;
   };
   const copy = async () => { try { await navigator.clipboard.writeText(PROFILE.contact.email); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { setErr("Couldn’t copy. Select the address and copy it manually."); } };
@@ -95,11 +96,16 @@ export function Contact() {
       <PageHead eyebrow="Contact" title={<>Say <span {...stylex.props(ui.grad)}>hello</span></>} sub="Write a message and it opens in your email app, ready to send." />
       <div {...stylex.props(ui.grid)}>
         <Panel>
+          <div aria-hidden="true" style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clipPath: "inset(50%)", whiteSpace: "nowrap", border: 0 }}>
+            <label htmlFor="contact-website">Leave this field empty</label>
+            <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
+          </div>
           <TextField name="name"><TextField.Label>Your name</TextField.Label><TextField.Input value={name} maxLength={80} autoComplete="name" onChange={(e) => setName(e.target.value)} /></TextField>
           <TextField name="email"><TextField.Label>Your email (optional)</TextField.Label><TextField.Input type="email" value={email} maxLength={120} autoComplete="email" onChange={(e) => setEmail(e.target.value)} /></TextField>
           <TextArea aria-label="Message" placeholder="What would you like to build or draw?" rows={5} maxLength={2000} fullWidth value={msg} onChange={(e) => setMsg(e.target.value)} />
-          {err && <p role="alert" {...stylex.props(ui.muted)} style={{ color: "#ff453a" }}>{err}</p>}
+          {err && <p role="alert" aria-live="assertive" {...stylex.props(ui.muted)} style={{ color: "#ff453a" }}>{err}</p>}
           <Button variant="prominent" disabled={!msg.trim()} onClick={send}><I.send size={16} /> Send message</Button>
+          <p role="status" aria-live="polite" className="sr-only">{copied ? "Email address copied." : ""}</p>
         </Panel>
         <Panel delay={110}>
           <IconTile><I.mail size={22} /></IconTile>

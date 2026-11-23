@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { tokens } from "@lenso/tokens/tokens.stylex.const";
 
 type P = { size?: number };
 const S = (d: ReactNode) => ({ size = 20 }: P) => (
@@ -44,18 +45,16 @@ export const BRAND: Record<string, { icon: (p: P) => ReactNode; bg: string }> = 
   "github-primary": { icon: I.github, bg: "#24292f" },
   "github-personal": { icon: I.github, bg: "#3b4252" },
   youtube: { icon: I.youtube, bg: "#ff0033" },
-  instagram: { icon: I.instagram, bg: "linear-gradient(45deg,#f9a03f,#e1306c 50%,#833ab4)" },
+  instagram: { icon: I.instagram, bg: "#c13584" },
   pinterest: { icon: I.pinterest, bg: "#e60023" },
-  website: { icon: I.globe, bg: "linear-gradient(135deg,#60a5fa,#a855f7)" },
+  website: { icon: I.globe, bg: "#536c88" },
 };
 
 export function Logo({ size = 28 }: P) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#60a5fa" /><stop offset=".55" stopColor="#a855f7" /><stop offset="1" stopColor="#fb923c" /></linearGradient></defs>
-      <rect width="32" height="32" rx="9" fill="url(#lg)" />
-      <path d="M11 8.5v15M11 16l9-7.5M13.5 14l7.5 9.5" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <span aria-hidden="true" style={{ width: size, height: size, display: "grid", placeItems: "center", borderRadius: 8, backgroundColor: tokens.labelPrimary, color: tokens.backgroundGroupedPrimary, fontSize: size * 0.58, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.08em" }}>
+      K
+    </span>
   );
 }
 

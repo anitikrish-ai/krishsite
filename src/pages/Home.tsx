@@ -1,101 +1,71 @@
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
-import { Button, Chip } from "@lenso/ui";
+import { GlassButton } from "@lenso/ui";
 import { PROFILE } from "../data/profile";
 import { PROJECTS } from "../data/projects";
-import { SOCIAL_PROFILES } from "../data/socials";
-import { Counter, Marquee, Reveal, Typewriter } from "../fx";
-import { I, SketchArt } from "../icons";
-import { IconTile, Panel, Status } from "../panel";
+import { I } from "../icons";
 import { go } from "../router";
 import { ui } from "../ui";
 
 const s = stylex.create({
-  hero: { paddingBlock: { default: "96px 40px", "@media (max-width: 560px)": "64px 24px" }, textAlign: "center" },
-  h1: { fontSize: "clamp(44px, 10vw, 112px)", fontWeight: 750, lineHeight: 0.98, letterSpacing: "-0.045em", margin: "22px 0 16px" },
-  line: { fontSize: "clamp(19px, 3vw, 30px)", fontWeight: 500, letterSpacing: "-0.02em", color: tokens.labelSecondary, minHeight: 40, margin: 0 },
-  center: { justifyContent: "center", marginTop: 30 },
-  stats: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(150px, 100%), 1fr))", gap: 16, marginTop: 52 },
-  num: { fontSize: 44, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 },
+  hero: { paddingBlock: { default: "104px 80px", "@media (max-width: 560px)": "72px 56px" } },
+  h1: { fontSize: "clamp(48px, 9vw, 88px)", fontWeight: 700, lineHeight: 0.98, letterSpacing: "-0.05em", margin: "0 0 22px", color: tokens.labelPrimary },
+  line: { fontSize: "clamp(20px, 3vw, 30px)", fontWeight: 500, letterSpacing: "-0.025em", lineHeight: 1.25, color: tokens.labelPrimary, maxWidth: 760, margin: 0 },
+  actions: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 20, marginTop: 32 },
+  cta: { minHeight: 48, borderRadius: 14, paddingInline: 20 },
+  section: { paddingBlock: "40px 72px" },
+  workRow: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 32, marginTop: 28, "@media (max-width: 680px)": { gridTemplateColumns: "1fr", gap: 24 } },
+  workItem: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 10, paddingBlock: 18, borderTop: `1px solid ${tokens.separator}` },
+  workTitle: { fontSize: 20, fontWeight: 650, letterSpacing: "-0.02em", lineHeight: 1.25, margin: 0, color: tokens.labelPrimary },
+  skills: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 28, marginTop: 24, "@media (max-width: 680px)": { gridTemplateColumns: "1fr", gap: 20 } },
+  skillGroup: { borderTop: `1px solid ${tokens.separator}`, paddingTop: 14 },
+  skillName: { fontSize: 15, fontWeight: 600, margin: "0 0 10px", color: tokens.labelPrimary },
+  skillList: { display: "flex", flexWrap: "wrap", columnGap: 12, rowGap: 8, color: tokens.labelSecondary, fontSize: 14 },
+  workLink: { display: "inline-flex", alignItems: "center", gap: 8, marginTop: 4, minHeight: 44, color: tokens.labelPrimary, textDecoration: "underline", textUnderlineOffset: 4, fontSize: 14, fontWeight: 550 },
 });
 
-const WHAT = [
-  { icon: I.code, bg: "linear-gradient(135deg,#60a5fa,#3b82f6)", title: "Build", text: "Web tools and prototypes, built with AI-assisted workflows on solid HTML, CSS, JavaScript, SQL and Python foundations." },
-  { icon: I.pen, bg: "linear-gradient(135deg,#fb923c,#f472b6)", title: "Draw", text: "Pencil sketches and anime-inspired digital art, from quick studies to colored illustrations." },
-  { icon: I.sparkles, bg: "linear-gradient(135deg,#a78bfa,#6366f1)", title: "Imagine", text: "Product ideas and UI experiments, taken from a rough sketch to something people can use." },
-];
-
 export default function Home() {
-  const skills = PROFILE.skills.flatMap((g) => g.items);
-  const featured = PROJECTS.filter((p) => p.status === "working");
-  const stats: [number, string, string][] = [[PROJECTS.length, "", "Projects"], [SOCIAL_PROFILES.length, "", "Places to find me"], [2, "", "Art mediums"], [skills.length, "+", "Skills & tools"]];
+  const project = PROJECTS.find((item) => item.id === "dropfast");
+
   return (
     <>
       <section {...stylex.props(ui.wrap, s.hero)}>
-        <Reveal y={10}><Chip color="accent" variant="soft">Computer Engineering Diploma · Final year</Chip></Reveal>
-        <Reveal delay={90} y={26}><h1 {...stylex.props(s.h1, ui.grad)}>{PROFILE.name}</h1></Reveal>
-        <Reveal delay={180} y={18}><p {...stylex.props(s.line)}>I build <Typewriter words={["web tools", "anime sketches", "UI experiments", "college projects"]} /></p></Reveal>
-        <Reveal delay={270} y={18}><p {...stylex.props(ui.lead)} style={{ margin: "18px auto 0" }}>{PROFILE.intro}</p></Reveal>
-        <Reveal delay={360} y={18}>
-          <div {...stylex.props(ui.row, s.center)}>
-            <Button variant="prominent" size="lg" onClick={() => go("art")}>Explore the art</Button>
-            <Button variant="bordered" size="lg" onClick={() => go("projects")}>See projects</Button>
-            <Button variant="borderless" size="lg" onClick={() => go("contact")}>Say hello <I.arrow size={16} /></Button>
-          </div>
-        </Reveal>
-        <div {...stylex.props(s.stats)}>
-          {stats.map(([n, suf, label], i) => (
-            <Panel key={label} delay={i * 80} center pad={20}>
-              <div {...stylex.props(s.num)}><Counter to={n} suffix={suf} /></div><span {...stylex.props(ui.muted)}>{label}</span>
-            </Panel>
-          ))}
+        <h1 className="home-entrance home-entrance--name" {...stylex.props(s.h1)}>{PROFILE.name}</h1>
+        <p className="home-entrance home-entrance--line" {...stylex.props(s.line)}>{PROFILE.intro}</p>
+        <div className="home-entrance home-entrance--action" {...stylex.props(s.actions)}>
+          <GlassButton size="lg" variant="prominent" elastic xstyle={s.cta} onClick={() => go("projects")}>View projects</GlassButton>
+          <button type="button" className="text-link" onClick={() => go("art")}>See artwork</button>
         </div>
       </section>
 
-      <div style={{ marginBlock: 16 }}><Marquee items={skills} /></div>
-
-      <section {...stylex.props(ui.wrap, ui.section)}>
-        <Reveal><span {...stylex.props(ui.eyebrow)}>What I do</span><h2 {...stylex.props(ui.h2)}>Three things I love</h2></Reveal>
-        <div {...stylex.props(ui.grid)}>
-          {WHAT.map((w, i) => (
-            <Panel key={w.title} delay={i * 100}>
-              <IconTile bg={w.bg}><w.icon size={22} /></IconTile>
-              <h3 {...stylex.props(ui.title)}>{w.title}</h3><p {...stylex.props(ui.muted)}>{w.text}</p>
-            </Panel>
-          ))}
+      <section {...stylex.props(ui.wrap, s.section)} aria-labelledby="featured-heading">
+        <span {...stylex.props(ui.eyebrow)}>Selected work</span>
+        <h2 id="featured-heading" {...stylex.props(ui.h2)}>A tool I built and a gallery for my art</h2>
+        <div {...stylex.props(s.workRow)}>
+          <article {...stylex.props(s.workItem)}>
+            <h3 {...stylex.props(s.workTitle)}>{project?.title ?? "Project details pending"}</h3>
+            <p {...stylex.props(ui.muted)}>{project?.subtitle ?? "Project information has not been added yet."}</p>
+            {project?.liveUrl && <a {...stylex.props(s.workLink)} href={project.liveUrl} target="_blank" rel="noreferrer">Open {project.title}<I.ext size={15} /></a>}
+          </article>
+          <article {...stylex.props(s.workItem)}>
+            <h3 {...stylex.props(s.workTitle)}>Artwork placeholder</h3>
+            <p {...stylex.props(ui.muted)}>No original artwork has been added to the portfolio gallery yet.</p>
+            <button type="button" className="text-link" onClick={() => go("art")}>Open the gallery</button>
+          </article>
         </div>
       </section>
 
-      <section {...stylex.props(ui.wrap, ui.section)}>
-        <Reveal><span {...stylex.props(ui.eyebrow)}>Featured</span><h2 {...stylex.props(ui.h2)}>Live and working</h2></Reveal>
-        <div {...stylex.props(ui.grid)}>
-          {featured.map((p, i) => (
-            <Panel key={p.id} delay={i * 100}>
-              <div><Status working>Working</Status></div>
-              <h3 {...stylex.props(ui.title)}>{p.title}</h3><p {...stylex.props(ui.muted)} style={{ fontWeight: 500 }}>{p.subtitle}</p>
-              <p {...stylex.props(ui.muted)}>{p.description.length > 140 ? p.description.slice(0, 140) + "…" : p.description}</p>
-              <div {...stylex.props(ui.row)}>{p.technologies.slice(0, 3).map((t) => <Chip key={t} size="sm">{t}</Chip>)}</div>
-              <div style={{ marginTop: "auto" }}><Button variant="bordered" onClick={() => go("projects")}>All projects <I.arrow size={15} /></Button></div>
-            </Panel>
+      <section {...stylex.props(ui.wrap, s.section)} aria-labelledby="skills-heading">
+        <span {...stylex.props(ui.eyebrow)}>Skills</span>
+        <h2 id="skills-heading" {...stylex.props(ui.h2)}>What I use and practice</h2>
+        <div {...stylex.props(s.skills)}>
+          {PROFILE.skills.map((group) => (
+            <section key={group.category} {...stylex.props(s.skillGroup)} aria-label={group.category}>
+              <h3 {...stylex.props(s.skillName)}>{group.category}</h3>
+              <div {...stylex.props(s.skillList)}>{group.items.map((item) => <span key={item}>{item}</span>)}</div>
+            </section>
           ))}
-          <Panel delay={200}>
-            <SketchArt variant="traditional" />
-            <h3 {...stylex.props(ui.title)}>Pencil, pen &amp; pixels</h3>
-            <p {...stylex.props(ui.muted)}>Traditional sketches and anime-inspired digital art, collected in a photo-library style gallery.</p>
-            <div style={{ marginTop: "auto" }}><Button variant="prominent" onClick={() => go("art")}>Open gallery <I.arrow size={15} /></Button></div>
-          </Panel>
         </div>
-      </section>
-
-      <section {...stylex.props(ui.wrap, ui.section)}>
-        <Panel center pad={44}>
-          <h2 {...stylex.props(ui.h2, ui.grad)}>Let’s make something together</h2>
-          <p {...stylex.props(ui.muted)} style={{ maxWidth: 520 }}>{PROFILE.collaboration.summary}</p>
-          <div {...stylex.props(ui.row)} style={{ justifyContent: "center" }}>
-            <Button variant="prominent" size="lg" onClick={() => go("collaborate")}>Collaborate</Button>
-            <Button variant="bordered" size="lg" onClick={() => go("contact")}>Contact</Button>
-          </div>
-        </Panel>
       </section>
     </>
   );

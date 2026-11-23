@@ -1,7 +1,7 @@
 @font-face { font-family: "Inter"; src: url("/fonts/Inter-latin-variable.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
 :root {
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-ui: "Inter", system-ui, sans-serif;
   --safe-top: env(safe-area-inset-top, 0px);
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -32,5 +32,33 @@ img { max-width: 100%; }
   .glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background-color: Canvas !important; }
 }
 @media (prefers-contrast: more) { .glass { border: 1px solid CanvasText !important; } }
-.press { transition: transform 120ms ease-out; }
-.press:active { transform: scale(0.97); }
+.press { transition: transform 180ms ease-out; }
+.press:active { transform: scale(0.98); }
+:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+.skip-link { position: fixed; z-index: 100; inset: calc(8px + var(--safe-top)) auto auto 8px; transform: translateY(-160%); padding: 12px 16px; min-height: 44px; border-radius: 10px; background: Canvas; color: CanvasText; box-shadow: 0 4px 18px rgb(0 0 0 / 18%); }
+.skip-link:focus { transform: translateY(0); }
+.route-loading { min-height: 35dvh; display: grid; place-items: center; color: CanvasText; }
+[data-reduced-motion="true"] *, [data-reduced-motion="true"] *::before, [data-reduced-motion="true"] *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+.text-link { min-height: 44px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.text-link:active { transform: scale(0.98); }
+.home-entrance { opacity: 0; animation: home-enter 360ms cubic-bezier(.2,.7,.2,1) both; }
+.home-entrance--name { animation-delay: 0ms; }
+.home-entrance--line { animation-delay: 40ms; }
+.home-entrance--action { animation-delay: 80ms; }
+.art-item:hover > button > span, .art-item:focus-within > button > span,
+.art-item:hover > button + button, .art-item:focus-within > button + button { opacity: 1; }
+@keyframes home-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .home-entrance { animation-duration: 180ms; animation-delay: 0ms; }
+  .press, .text-link { transition: none; }
+}
+@media (hover: hover) {
+  .text-link:hover { transform: scale(1.01); }
+}
+@media print {
+  html, body, #root { background: #fff !important; color: #111 !important; overflow: visible !important; }
+  body { -webkit-print-color-adjust: economy; print-color-adjust: economy; }
+  header, footer, .skip-link, nav[aria-label="Mobile navigation"], [role="dialog"] { display: none !important; }
+  main { min-height: 0 !important; padding: 0 !important; }
+  a { color: #111 !important; text-decoration: underline; }
+}

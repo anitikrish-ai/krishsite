@@ -86,7 +86,7 @@ export const Projects: React.FC = () => {
           <span className="section-eyebrow">Projects</span>
           <h2 className="section-title">Selected Builds & Experiments</h2>
           <p className="section-subtitle">
-            Selected projects across independent AI-assisted tools and collaborative college engineering work — not an exhaustive list.
+            Selected projects across web tools and collaborative college engineering work. This is not an exhaustive list.
           </p>
         </div>
 

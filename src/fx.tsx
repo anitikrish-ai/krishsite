@@ -7,15 +7,12 @@ const blink = stylex.keyframes({ "0%, 49%": { opacity: 1 }, "50%, 100%": { opaci
 const NO_MOTION = "@media (prefers-reduced-motion: reduce)";
 
 const s = stylex.create({
-  bar: { position: "fixed", top: 0, left: 0, right: 0, height: 3, zIndex: 50, transformOrigin: "0 50%", backgroundImage: "linear-gradient(90deg,#60a5fa,#a78bfa,#fb923c)" },
-  track: { overflow: "hidden", maskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)", WebkitMaskImage: "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)" },
+  bar: { position: "fixed", top: 0, left: 0, right: 0, height: 2, zIndex: 50, transformOrigin: "0 50%", backgroundColor: tokens.labelSecondary },
+  track: { overflow: "hidden" },
   belt: { display: "flex", gap: 12, width: "max-content", animationName: { default: scroll, [NO_MOTION]: "none" }, animationDuration: "42s", animationIterationCount: "infinite", animationTimingFunction: "linear" },
   pill: { padding: "10px 18px", borderRadius: 999, whiteSpace: "nowrap", fontSize: 15, fontWeight: 500, backgroundColor: tokens.fillTertiary, color: tokens.labelSecondary },
   caret: { animationName: blink, animationDuration: "1s", animationIterationCount: "infinite", marginLeft: 2, fontWeight: 300 },
-  spot: { position: "relative", display: "flex", flex: 1, width: "100%", borderRadius: 26, transition: "transform 600ms cubic-bezier(.32,.72,0,1)",
-    transform: { default: "none", "@media (hover: hover)": { default: "none", ":hover": "translateY(-5px)" } } },
-  glow: { position: "absolute", inset: 0, borderRadius: 26, pointerEvents: "none", opacity: 0, transition: "opacity 500ms cubic-bezier(.32,.72,0,1)",
-    background: "radial-gradient(380px circle at var(--x,50%) var(--y,50%), rgba(10,132,255,.13), transparent 62%)" },
+  spot: { position: "relative", display: "flex", flex: 1, width: "100%", borderRadius: 16 },
 });
 
 export const useReduced = () => {
@@ -35,13 +32,9 @@ function useSeen<T extends HTMLElement>(threshold = 0.12) {
   return [ref, seen] as const;
 }
 
-export function Reveal({ children, delay = 0, y = 22, flex = false, style }: { children: ReactNode; delay?: number; y?: number; flex?: boolean; style?: CSSProperties }) {
-  const [ref, seen] = useSeen<HTMLDivElement>();
-  const e = "cubic-bezier(.32,.72,0,1)";
+export function Reveal({ children, flex = false, style }: { children: ReactNode; delay?: number; y?: number; flex?: boolean; style?: CSSProperties }) {
   return (
-    <div ref={ref} style={{ display: flex ? "flex" : undefined, flexDirection: flex ? "column" : undefined, height: flex ? "100%" : undefined,
-      opacity: seen ? 1 : 0, transform: seen ? "none" : `translateY(${y}px) scale(.985)`, filter: seen ? "none" : "blur(8px)",
-      transition: `opacity .9s ${e} ${delay}ms, transform .9s ${e} ${delay}ms, filter .9s ${e} ${delay}ms`, ...style }}>
+    <div style={{ display: flex ? "flex" : undefined, flexDirection: flex ? "column" : undefined, height: flex ? "100%" : undefined, ...style }}>
       {children}
     </div>
   );
@@ -49,17 +42,7 @@ export function Reveal({ children, delay = 0, y = 22, flex = false, style }: { c
 
 /** Flat hover treatment: gentle lift + a soft spotlight that follows the cursor (no 3D tilt). */
 export function Spot({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null); const glow = useRef<HTMLDivElement>(null);
-  const move = (e: React.PointerEvent) => {
-    if (e.pointerType === "touch" || !ref.current || !glow.current) return;
-    const r = ref.current.getBoundingClientRect();
-    glow.current.style.setProperty("--x", `${e.clientX - r.left}px`); glow.current.style.setProperty("--y", `${e.clientY - r.top}px`); glow.current.style.opacity = "1";
-  };
-  return (
-    <div ref={ref} {...stylex.props(s.spot)} onPointerMove={move} onPointerLeave={() => { if (glow.current) glow.current.style.opacity = "0"; }}>
-      {children}<div ref={glow} {...stylex.props(s.glow)} aria-hidden="true" />
-    </div>
-  );
+  return <div {...stylex.props(s.spot)}>{children}</div>;
 }
 
 export function Typewriter({ words }: { words: string[] }) {

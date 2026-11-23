@@ -22,9 +22,10 @@ export default function Projects() {
   const [tag, setTag] = useState("all");
   const [copyStatus, setCopyStatus] = useState("");
   const tags = Array.from(new Set(PROJECTS.flatMap((project) => project.technologies))).sort((a, b) => a.localeCompare(b));
+  const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const list = PROJECTS.filter((project) => {
-    const text = `${project.title} ${project.subtitle ?? ""} ${project.description} ${project.technologies.join(" ")}`.toLowerCase();
-    return (tab === "all" || project.status === tab) && (!query.trim() || text.includes(query.trim().toLowerCase())) && (tag === "all" || project.technologies.includes(tag));
+    const searchable = [project.id, project.title, project.subtitle ?? "", project.description, project.note ?? "", project.status, ...project.technologies].join(" ").toLocaleLowerCase();
+    return (tab === "all" || project.status === tab) && terms.every((term) => searchable.includes(term)) && (tag === "all" || project.technologies.includes(tag));
   });
   const moveActive = (direction: number) => {
     if (!active || list.length < 2) return;

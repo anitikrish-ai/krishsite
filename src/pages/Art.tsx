@@ -21,6 +21,7 @@ const s = stylex.create({
   full: { maxWidth: "100%", maxHeight: "62dvh", borderRadius: 0, display: "block", marginInline: "auto" },
   nav: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, gap: 8 },
   bar: { display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between", alignItems: "center" },
+  search: { minHeight: 44, flex: "1 1 240px", maxWidth: 420, paddingInline: 12, borderRadius: 9, border: "1px solid currentColor", backgroundColor: "transparent", color: "inherit" },
 });
 const FAV = "krish_art_favs_v2";
 const OK = ["image/png", "image/jpeg", "image/webp", "image/gif", "image/avif"];
@@ -29,12 +30,20 @@ const MAX_BYTES = 15 * 1024 * 1024;
 export default function Art() {
   const [items, setItems] = useState<ArtworkItem[]>(INITIAL_ARTWORK);
   const [tab, setTab] = useState("all");
+  const [query, setQuery] = useState("");
   const [idx, setIdx] = useState<number | null>(null);
   const [err, setErr] = useState("");
   const [favs, setFavs] = useState<string[]>(() => { try { const v = JSON.parse(localStorage.getItem(FAV) || "[]"); return Array.isArray(v) ? v.filter((x) => typeof x === "string") : []; } catch { return []; } });
   const file = useRef<HTMLInputElement>(null);
 
-  const shown = useMemo(() => items.filter((i) => tab === "all" || (tab === "fav" ? favs.includes(i.id) : i.medium === tab)).sort((a, b) => b.date.localeCompare(a.date)), [items, tab, favs]);
+  const shown = useMemo(() => {
+    const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+    return items.filter((item) => {
+      const matchesTab = tab === "all" || (tab === "fav" ? favs.includes(item.id) : item.medium === tab);
+      const searchable = [item.title, item.description ?? "", item.medium, item.date, ...(item.collections ?? []), ...(item.tags ?? [])].join(" ").toLocaleLowerCase();
+      return matchesTab && terms.every((term) => searchable.includes(term));
+    }).sort((a, b) => b.date.localeCompare(a.date));
+  }, [items, tab, favs, query]);
   const cur = idx === null ? null : shown[idx];
   const step = (d: number) => setIdx((i) => (i === null || !shown.length ? i : (i + d + shown.length) % shown.length));
   const toggleFav = (id: string) => setFavs((f) => { const n = f.includes(id) ? f.filter((x) => x !== id) : [...f, id]; try { localStorage.setItem(FAV, JSON.stringify(n)); } catch { /* ignore */ } return n; });
@@ -79,6 +88,8 @@ export default function Art() {
               </Tabs.List></Tabs.ListContainer>
             </Tabs>
           </div>
+          <label className="sr-only" htmlFor="artwork-search">Search artwork by title, medium, date, or collection</label>
+          <input id="artwork-search" type="search" placeholder="Search titles, mediums, dates, or collections" value={query} onChange={(event) => setQuery(event.target.value)} {...stylex.props(s.search)} />
           <Button variant="prominent" onClick={() => file.current?.click()}><I.plus size={16} /> Add artwork</Button>
           <input ref={file} type="file" accept={OK.join(",")} multiple hidden onChange={(e) => { onFiles(e.target.files); e.target.value = ""; }} />
         </div>
@@ -88,8 +99,9 @@ export default function Art() {
       {shown.length === 0 ? (
         <div style={{ marginTop: 24 }}>
           <Panel center pad={36}>
-            <h3 {...stylex.props(ui.title)}>{tab === "fav" ? "No favorites yet" : "No artwork added yet"}</h3>
-            <p {...stylex.props(ui.muted)} style={{ maxWidth: 480 }}>Add original images to <code>public/artwork/</code> and register them in <code>src/data/artwork.ts</code>, or use “Add artwork” to preview an image in this session.</p>
+            <h3 {...stylex.props(ui.title)}>{query.trim() ? "No artwork matches that search" : tab === "fav" ? "No favorites yet" : "No artwork added yet"}</h3>
+            <p {...stylex.props(ui.muted)} style={{ maxWidth: 480 }}>{query.trim() ? "Try a title, medium, date, or collection name that appears in the artwork details." : "Add original images to public/artwork/ and register them in src/data/artwork.ts, or use Add artwork to preview an image in this session."}</p>
+            {query.trim() && <Button variant="bordered" onClick={() => setQuery("")}>Clear search</Button>}
           </Panel>
         </div>
       ) : (

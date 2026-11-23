@@ -81,7 +81,7 @@ export default function Art() {
 
       <Reveal style={{ marginTop: 36 }}>
         <div {...stylex.props(s.bar)}>
-          <div {...stylex.props(ui.scrollX)}>
+          <div className="scroll-x" {...stylex.props(ui.scrollX)}>
             <Tabs value={tab} onValueChange={(v) => setTab(String(v))}>
               <Tabs.ListContainer><Tabs.List aria-label="Library">
                 <Tabs.Tab value="all">All</Tabs.Tab><Tabs.Tab value="traditional">Traditional</Tabs.Tab><Tabs.Tab value="digital">Digital</Tabs.Tab><Tabs.Tab value="fav">Favorites</Tabs.Tab><Tabs.Indicator />

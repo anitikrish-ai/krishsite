@@ -30,9 +30,9 @@ export default function Home() {
   return (
     <>
       <section {...stylex.props(ui.wrap, s.hero)}>
-        <h1 className="home-entrance home-entrance--name" {...stylex.props(s.h1)}>{PROFILE.name}</h1>
-        <p className="home-entrance home-entrance--line" {...stylex.props(s.line)}>{PROFILE.intro}</p>
-        <div className="home-entrance home-entrance--action" {...stylex.props(s.actions)}>
+        <h1 {...stylex.props(s.h1)}>{PROFILE.name}</h1>
+        <p {...stylex.props(s.line)}>{PROFILE.intro}</p>
+        <div {...stylex.props(s.actions)}>
           <GlassButton size="lg" variant="prominent" elastic xstyle={s.cta} onClick={() => go("projects")}>View projects</GlassButton>
           <button type="button" className="text-link" onClick={() => go("art")}>See artwork</button>
         </div>

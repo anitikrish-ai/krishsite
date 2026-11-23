@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "@lenso/tokens/tokens.stylex.const";
 import { ThemeScope } from "@lenso/ui";
@@ -20,7 +20,7 @@ const NotFound = lazy(() => import("./pages/Legal").then((module) => ({ default:
 const rise = stylex.keyframes({ from: { opacity: 0, transform: "translateY(10px)" }, to: { opacity: 1, transform: "none" } });
 const s = stylex.create({
   page: { minHeight: "100dvh", backgroundColor: tokens.backgroundGroupedPrimary, color: tokens.labelPrimary, position: "relative", overflowX: "hidden", paddingBottom: { default: 0, "@media (max-width: 900px)": "calc(76px + env(safe-area-inset-bottom, 0px))" } },
-  view: { position: "relative", zIndex: 1, animationName: { default: rise, "@media (prefers-reduced-motion: reduce)": "none" }, animationDuration: "360ms", animationTimingFunction: "cubic-bezier(.2,.7,.2,1)", animationFillMode: "both" },
+  view: { position: "relative", zIndex: 1, animationName: { default: rise, "@media (prefers-reduced-motion: reduce)": "none" }, animationDuration: "180ms", animationTimingFunction: "ease-out", animationFillMode: "both" },
 });
 const THEME_KEY = "krish_theme_v3";
 const MOTION_KEY = "krish_reduce_motion_v1";
@@ -45,6 +45,15 @@ export default function App() {
     try { return localStorage.getItem(MOTION_KEY) === "true"; } catch { return false; }
   });
   const dark = themeMode === "system" ? systemDark : themeMode === "dark";
+  const previousDark = useRef(dark);
+  useLayoutEffect(() => {
+    if (previousDark.current === dark) return;
+    previousDark.current = dark;
+    const root = document.documentElement;
+    root.dataset.themeTransition = "true";
+    const timeout = window.setTimeout(() => { delete root.dataset.themeTransition; }, 220);
+    return () => window.clearTimeout(timeout);
+  }, [dark]);
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const update = () => setSystemDark(media.matches);

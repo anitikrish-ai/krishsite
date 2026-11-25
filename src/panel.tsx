@@ -9,7 +9,7 @@ export function Panel({ children, delay = 0, center = false, pad = 24, style }: 
   return (
     <Reveal delay={delay} flex>
       <Spot>
-        <Card xstyle={ui.fill}>
+        <Card variant="glass" xstyle={ui.fill}>
           <div {...stylex.props(ui.pad)} style={{ padding: pad, alignItems: center ? "center" : undefined, textAlign: center ? "center" : undefined, ...style }}>{children}</div>
         </Card>
       </Spot>
